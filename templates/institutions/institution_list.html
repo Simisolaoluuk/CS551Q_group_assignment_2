@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Browse Institutions</h1>
+    
+    <form method="GET" style="margin-bottom: 20px;">
+        <select name="type" required>
+            <option value="PRIMARY" {% if request.GET.type == 'PRIMARY' %}selected{% endif %}>Primary</option>
+            <option value="SECONDARY" {% if request.GET.type == 'SECONDARY' %}selected{% endif %}>Secondary</option>
+            <option value="COLLEGE" {% if request.GET.type == 'COLLEGE' %}selected{% endif %}>College</option>
+            <option value="UNIVERSITY" {% if request.GET.type == 'UNIVERSITY' %}selected{% endif %}>University</option>
+        </select>
+        <select name="region">
+            <option value="">All Regions</option>
+            <option value="Aberdeen" {% if request.GET.region == 'Aberdeen' %}selected{% endif %}>Aberdeen</option>
+            <option value="Edinburgh" {% if request.GET.region == 'Edinburgh' %}selected{% endif %}>Edinburgh</option>
+            <option value="Glasgow" {% if request.GET.region == 'Glasgow' %}selected{% endif %}>Glasgow</option>
+            <option value="London" {% if request.GET.region == 'London' %}selected{% endif %}>London</option>
+        </select>
+        <input type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
+        <select name="sort">
+            <option value="score">Sort by Score</option>
+            <option value="name">Sort by Name</option>
+        </select>
+        <button type="submit">Apply</button>
+    </form>
+
+    <form action="{% url 'compare_institutions' %}" method="GET">
+        <input type="hidden" name="type" value="{{ request.GET.type }}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Compare</th>
+                    <th>Name</th>
+                    <th>Region</th>
+                    <th>Score</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for institution in page_obj %}
+                <tr>
+                    <td><input type="checkbox" name="institution_ids" value="{{ institution.id }}"></td>
+                    <td>{{ institution.name }}</td>
+                    <td>{{ institution.region.name }}</td>
+                    <td>{{ institution.score }}</td>
+                    <td><a href="{% url 'institution_detail' institution.id %}">View</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No institutions found for this type/region.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <button type="submit">Compare Selected</button>
+    </form>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; First</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+        {% endif %}
+    </div>
+{% endblock %}

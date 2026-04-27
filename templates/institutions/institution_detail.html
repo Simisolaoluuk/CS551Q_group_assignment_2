@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ institution.name }}</h1>
+    <p><strong>Region:</strong> {{ institution.region.name }}</p>
+    <p><strong>Type:</strong> {{ institution.get_type_display }}</p>
+    
+    <hr>
+    
+    <h2>Key Metrics</h2>
+    <ul>
+        <li><strong>Score:</strong> {{ institution.score }}</li>
+        <li><strong>Attendance:</strong> {{ institution.attendance }}%</li>
+        <li><strong>Rating:</strong> {{ institution.rating|default:"N/A" }}</li>
+    </ul>
+
+    <h2>Performance Trend</h2>
+    <div class="chart-container" style="border: 1px solid #ccc; height: 300px; display: flex; align-items: center; justify-content: center;">
+        <p>[Line Chart Here]</p>
+    </div>
+
+    <br>
+    <a href="{% url 'institution_list' %}">&larr; Back to list</a>
+{% endblock %}
