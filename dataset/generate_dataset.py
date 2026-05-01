@@ -1,27 +1,15 @@
-"""
-Generate a realistic UK Institutions dataset (1000+ records) for the
-CS551Q group project. Covers Primary Schools, Secondary Schools,
-Colleges and Universities across all UK regions.
-
-Output files:
-  - regions.csv
-  - institutions.csv
-  - performance_records.csv
-
-Author: Database Manager
-"""
+# script for making the uk institution dataset
+# generates regions, institutions and performance records as csv files
 
 import csv
 import random
 import os
 
-random.seed(42)  # reproducible
+random.seed(42)
 
-# ---------------------------------------------------------------------------
-# 1. UK Regions (real official regions / nations)
-# ---------------------------------------------------------------------------
+
+# uk regions
 REGIONS = [
-    # England regions
     ("North East England", "England"),
     ("North West England", "England"),
     ("Yorkshire and the Humber", "England"),
@@ -31,13 +19,12 @@ REGIONS = [
     ("Greater London", "England"),
     ("South East England", "England"),
     ("South West England", "England"),
-    # Devolved nations
     ("Scotland", "Scotland"),
     ("Wales", "Wales"),
     ("Northern Ireland", "Northern Ireland"),
 ]
 
-# Cities mapped to each region (real cities)
+# cities for each region
 CITY_BY_REGION = {
     "North East England": ["Newcastle upon Tyne", "Sunderland", "Durham", "Middlesbrough", "Gateshead"],
     "North West England": ["Manchester", "Liverpool", "Preston", "Lancaster", "Blackpool", "Chester", "Bolton"],
@@ -53,11 +40,8 @@ CITY_BY_REGION = {
     "Northern Ireland": ["Belfast", "Londonderry", "Lisburn", "Newry", "Armagh"],
 }
 
-# ---------------------------------------------------------------------------
-# 2. Real UK Universities (a curated sample - all real institutions)
-# ---------------------------------------------------------------------------
+# real uk universities
 UNIVERSITIES = [
-    # London
     ("Imperial College London", "Greater London", "London"),
     ("University College London", "Greater London", "London"),
     ("King's College London", "Greater London", "London"),
@@ -72,10 +56,8 @@ UNIVERSITIES = [
     ("Middlesex University", "Greater London", "London"),
     ("London South Bank University", "Greater London", "London"),
     ("Kingston University", "Greater London", "London"),
-    # Oxbridge
     ("University of Oxford", "South East England", "Oxford"),
     ("University of Cambridge", "East of England", "Cambridge"),
-    # Russell Group + others
     ("University of Manchester", "North West England", "Manchester"),
     ("University of Liverpool", "North West England", "Liverpool"),
     ("Lancaster University", "North West England", "Lancaster"),
@@ -124,7 +106,6 @@ UNIVERSITIES = [
     ("Durham University", "North East England", "Durham"),
     ("Northumbria University", "North East England", "Newcastle upon Tyne"),
     ("Teesside University", "North East England", "Middlesbrough"),
-    # Scotland
     ("University of Edinburgh", "Scotland", "Edinburgh"),
     ("University of Glasgow", "Scotland", "Glasgow"),
     ("University of St Andrews", "Scotland", "Edinburgh"),
@@ -136,21 +117,17 @@ UNIVERSITIES = [
     ("Edinburgh Napier University", "Scotland", "Edinburgh"),
     ("Glasgow Caledonian University", "Scotland", "Glasgow"),
     ("Robert Gordon University", "Scotland", "Aberdeen"),
-    # Wales
     ("Cardiff University", "Wales", "Cardiff"),
     ("Swansea University", "Wales", "Swansea"),
     ("Aberystwyth University", "Wales", "Aberystwyth"),
     ("Bangor University", "Wales", "Bangor"),
     ("Cardiff Metropolitan University", "Wales", "Cardiff"),
     ("University of South Wales", "Wales", "Newport"),
-    # Northern Ireland
     ("Queen's University Belfast", "Northern Ireland", "Belfast"),
     ("Ulster University", "Northern Ireland", "Belfast"),
 ]
 
-# ---------------------------------------------------------------------------
-# 3. Real UK Colleges (a curated sample of FE / sixth form colleges)
-# ---------------------------------------------------------------------------
+# real uk colleges
 COLLEGES = [
     ("City of Bristol College", "South West England", "Bristol"),
     ("Bath College", "South West England", "Bath"),
@@ -160,7 +137,6 @@ COLLEGES = [
     ("Gloucestershire College", "South West England", "Gloucester"),
     ("Cornwall College", "South West England", "Plymouth"),
     ("New College Swindon", "South West England", "Bristol"),
-
     ("Manchester College", "North West England", "Manchester"),
     ("Liverpool City College", "North West England", "Liverpool"),
     ("Preston College", "North West England", "Preston"),
@@ -168,33 +144,28 @@ COLLEGES = [
     ("Bolton College", "North West England", "Bolton"),
     ("Salford City College", "North West England", "Manchester"),
     ("Lancaster and Morecambe College", "North West England", "Lancaster"),
-
     ("Leeds City College", "Yorkshire and the Humber", "Leeds"),
     ("Sheffield College", "Yorkshire and the Humber", "Sheffield"),
     ("Bradford College", "Yorkshire and the Humber", "Bradford"),
     ("York College", "Yorkshire and the Humber", "York"),
     ("Doncaster College", "Yorkshire and the Humber", "Doncaster"),
     ("Hull College", "Yorkshire and the Humber", "Hull"),
-
     ("Birmingham Metropolitan College", "West Midlands", "Birmingham"),
     ("South and City College Birmingham", "West Midlands", "Birmingham"),
     ("Solihull College", "West Midlands", "Birmingham"),
     ("Coventry College", "West Midlands", "Coventry"),
     ("City of Wolverhampton College", "West Midlands", "Wolverhampton"),
     ("Stoke on Trent College", "West Midlands", "Stoke-on-Trent"),
-
     ("Nottingham College", "East Midlands", "Nottingham"),
     ("Leicester College", "East Midlands", "Leicester"),
     ("Derby College", "East Midlands", "Derby"),
     ("Lincoln College", "East Midlands", "Lincoln"),
     ("Northampton College", "East Midlands", "Northampton"),
-
     ("Cambridge Regional College", "East of England", "Cambridge"),
     ("City College Norwich", "East of England", "Norwich"),
     ("Suffolk New College", "East of England", "Ipswich"),
     ("Peterborough College", "East of England", "Peterborough"),
     ("Colchester Institute", "East of England", "Colchester"),
-
     ("City and Islington College", "Greater London", "London"),
     ("Westminster Kingsway College", "Greater London", "London"),
     ("Ealing, Hammersmith and West London College", "Greater London", "Ealing"),
@@ -203,7 +174,6 @@ COLLEGES = [
     ("Newham College", "Greater London", "London"),
     ("Lambeth College", "Greater London", "London"),
     ("Bromley College", "Greater London", "Bromley"),
-
     ("Oxford City College", "South East England", "Oxford"),
     ("Reading College", "South East England", "Reading"),
     ("Brighton MET College", "South East England", "Brighton"),
@@ -211,13 +181,11 @@ COLLEGES = [
     ("Portsmouth College", "South East England", "Portsmouth"),
     ("Canterbury College", "South East England", "Canterbury"),
     ("Milton Keynes College", "South East England", "Milton Keynes"),
-
     ("Newcastle College", "North East England", "Newcastle upon Tyne"),
     ("Sunderland College", "North East England", "Sunderland"),
     ("New College Durham", "North East England", "Durham"),
     ("Middlesbrough College", "North East England", "Middlesbrough"),
     ("Gateshead College", "North East England", "Gateshead"),
-
     ("Edinburgh College", "Scotland", "Edinburgh"),
     ("Glasgow Clyde College", "Scotland", "Glasgow"),
     ("North East Scotland College", "Scotland", "Aberdeen"),
@@ -225,22 +193,18 @@ COLLEGES = [
     ("Forth Valley College", "Scotland", "Stirling"),
     ("Inverness College UHI", "Scotland", "Inverness"),
     ("City of Glasgow College", "Scotland", "Glasgow"),
-
     ("Cardiff and Vale College", "Wales", "Cardiff"),
     ("Gower College Swansea", "Wales", "Swansea"),
     ("Coleg Gwent", "Wales", "Newport"),
     ("Coleg Cambria", "Wales", "Wrexham"),
     ("Coleg Sir Gar", "Wales", "Swansea"),
-
     ("Belfast Metropolitan College", "Northern Ireland", "Belfast"),
     ("Northern Regional College", "Northern Ireland", "Lisburn"),
     ("South Eastern Regional College", "Northern Ireland", "Newry"),
     ("South West College", "Northern Ireland", "Armagh"),
 ]
 
-# ---------------------------------------------------------------------------
-# 4. Templates for generating realistic Primary / Secondary school names
-# ---------------------------------------------------------------------------
+# words for making up school names
 PRIMARY_PREFIXES = [
     "St Mary's", "St John's", "St Peter's", "St Paul's", "St Thomas'",
     "St Andrew's", "St George's", "Holy Trinity", "All Saints", "Sacred Heart",
@@ -281,34 +245,34 @@ SECONDARY_SUFFIXES = [
     "Grammar School",
     "Comprehensive School",
     "School",
-    "College",  # in UK secondaries are sometimes called Colleges
+    "College",
     "Sixth Form",
 ]
 
-# Ofsted ratings (England) – used as the rating system for schools
+# ofsted ratings
 OFSTED = ["Outstanding", "Good", "Requires Improvement", "Inadequate"]
-OFSTED_WEIGHTS = [0.20, 0.65, 0.12, 0.03]  # realistic UK distribution
+OFSTED_WEIGHTS = [0.20, 0.65, 0.12, 0.03]
 
-# ---------------------------------------------------------------------------
-# Helper functions
-# ---------------------------------------------------------------------------
 
 def make_school_name(level, used_names):
-    """Generate a unique realistic school name."""
+    # pick a random name and check it's not already used
     if level == "Primary":
-        prefixes, suffixes = PRIMARY_PREFIXES, PRIMARY_SUFFIXES
+        prefixes = PRIMARY_PREFIXES
+        suffixes = PRIMARY_SUFFIXES
     else:
-        prefixes, suffixes = SECONDARY_PREFIXES, SECONDARY_SUFFIXES
+        prefixes = SECONDARY_PREFIXES
+        suffixes = SECONDARY_SUFFIXES
 
-    for _ in range(50):  # try up to 50 times to avoid duplicates
-        name = f"{random.choice(prefixes)} {random.choice(suffixes)}"
+    for i in range(50):
+        name = random.choice(prefixes) + " " + random.choice(suffixes)
         if name not in used_names:
             used_names.add(name)
             return name
-    # fallback: append a number
+
+    # add a number if all combos are used
     n = 1
     while True:
-        name = f"{random.choice(prefixes)} {random.choice(suffixes)} {n}"
+        name = random.choice(prefixes) + " " + random.choice(suffixes) + " " + str(n)
         if name not in used_names:
             used_names.add(name)
             return name
@@ -316,7 +280,7 @@ def make_school_name(level, used_names):
 
 
 def make_postcode(city):
-    """Generate a plausible UK postcode prefix based on city."""
+    # uk postcode prefix by city
     prefixes = {
         "London": "SW", "Croydon": "CR", "Bromley": "BR", "Ealing": "W",
         "Camden": "NW", "Westminster": "SW", "Hackney": "E",
@@ -345,15 +309,15 @@ def make_postcode(city):
         "Newry": "BT", "Armagh": "BT",
     }
     p = prefixes.get(city, "XX")
-    return f"{p}{random.randint(1, 99)} {random.randint(1, 9)}{random.choice('ABDEFGHJLNPQRSTUWXYZ')}{random.choice('ABDEFGHJLNPQRSTUWXYZ')}"
+    letters = "ABDEFGHJLNPQRSTUWXYZ"
+    return p + str(random.randint(1, 99)) + " " + str(random.randint(1, 9)) + random.choice(letters) + random.choice(letters)
 
 
-def weighted_rating():
+def get_rating():
     return random.choices(OFSTED, weights=OFSTED_WEIGHTS, k=1)[0]
 
 
-def score_for_rating(rating):
-    """Convert Ofsted rating into a numeric score 0–100 (for sorting/ranking)."""
+def get_score(rating):
     if rating == "Outstanding":
         return random.randint(85, 100)
     if rating == "Good":
@@ -363,27 +327,26 @@ def score_for_rating(rating):
     return random.randint(20, 44)
 
 
-# ---------------------------------------------------------------------------
-# Build the dataset
-# ---------------------------------------------------------------------------
-
-def build():
+def main():
     out_dir = os.path.dirname(os.path.abspath(__file__))
 
-    # ---- Regions ----
+    # build regions
     regions_rows = []
     region_id_map = {}
-    for i, (name, country) in enumerate(REGIONS, start=1):
-        region_id_map[name] = i
-        regions_rows.append({"region_id": i, "name": name, "country": country})
+    rid = 1
+    for name, country in REGIONS:
+        region_id_map[name] = rid
+        regions_rows.append({"region_id": rid, "name": name, "country": country})
+        rid += 1
 
-    # ---- Institutions ----
+    # build institutions
     institutions = []
     used_names = set()
     inst_id = 1
 
-    # Add all real Universities
+    # add universities
     for uni_name, region, city in UNIVERSITIES:
+        clean = uni_name.lower().replace(" ", "").replace(",", "").replace("'", "")
         institutions.append({
             "institution_id": inst_id,
             "name": uni_name,
@@ -392,15 +355,15 @@ def build():
             "region_name": region,
             "city": city,
             "postcode": make_postcode(city),
-            "founded_year": random.randint(1100, 2010) if "Oxford" in uni_name or "Cambridge" in uni_name
-                else random.randint(1820, 2010),
-            "website": "https://www." + uni_name.lower().replace(' ', '').replace(',', '').replace("'", '')[:25] + ".ac.uk",
+            "founded_year": random.randint(1100, 2010) if "Oxford" in uni_name or "Cambridge" in uni_name else random.randint(1820, 2010),
+            "website": "https://www." + clean[:25] + ".ac.uk",
         })
         used_names.add(uni_name)
         inst_id += 1
 
-    # Add all real Colleges
+    # add colleges
     for col_name, region, city in COLLEGES:
+        clean = col_name.lower().replace(" ", "").replace(",", "").replace("'", "")
         institutions.append({
             "institution_id": inst_id,
             "name": col_name,
@@ -410,13 +373,12 @@ def build():
             "city": city,
             "postcode": make_postcode(city),
             "founded_year": random.randint(1900, 2015),
-            "website": "https://www." + col_name.lower().replace(' ', '').replace(',', '').replace("'", '')[:25] + ".ac.uk",
+            "website": "https://www." + clean[:25] + ".ac.uk",
         })
         used_names.add(col_name)
         inst_id += 1
 
-    # Generate Primary Schools – aim to push total well past 1000
-    # Distribute across regions weighted by population
+    # weights for spreading schools across regions (roughly by population)
     region_weights = {
         "Greater London": 18, "South East England": 15, "North West England": 12,
         "West Midlands": 9, "East of England": 9, "Yorkshire and the Humber": 9,
@@ -424,16 +386,9 @@ def build():
         "Wales": 5, "North East England": 4, "Northern Ireland": 3,
     }
 
-    PRIMARY_TOTAL = 700
-    SECONDARY_TOTAL = 250
-
-    # Primary schools
-    for _ in range(PRIMARY_TOTAL):
-        region = random.choices(
-            list(region_weights.keys()),
-            weights=list(region_weights.values()),
-            k=1,
-        )[0]
+    # add primary schools
+    for i in range(700):
+        region = random.choices(list(region_weights.keys()), weights=list(region_weights.values()), k=1)[0]
         city = random.choice(CITY_BY_REGION[region])
         name = make_school_name("Primary", used_names)
         institutions.append({
@@ -449,13 +404,9 @@ def build():
         })
         inst_id += 1
 
-    # Secondary schools
-    for _ in range(SECONDARY_TOTAL):
-        region = random.choices(
-            list(region_weights.keys()),
-            weights=list(region_weights.values()),
-            k=1,
-        )[0]
+    # add secondary schools
+    for i in range(250):
+        region = random.choices(list(region_weights.keys()), weights=list(region_weights.values()), k=1)[0]
         city = random.choice(CITY_BY_REGION[region])
         name = make_school_name("Secondary", used_names)
         institutions.append({
@@ -471,49 +422,46 @@ def build():
         })
         inst_id += 1
 
-    # ---- Performance Records ----
-    # Each institution gets 3 yearly records (2022, 2023, 2024)
+    # build performance records (3 years per institution)
     perf_rows = []
     perf_id = 1
     for inst in institutions:
         cat = inst["category"]
-        for year in (2022, 2023, 2024):
-            rating = weighted_rating()
-            score = score_for_rating(rating)
+        for year in [2022, 2023, 2024]:
+            rating = get_rating()
+            score = get_score(rating)
 
             if cat == "University":
-                # Universities use student satisfaction + ranking instead of Ofsted
-                rating_label = (
-                    "Gold" if score >= 85 else
-                    "Silver" if score >= 65 else
-                    "Bronze"
-                )
-                student_satisfaction = round(random.uniform(70, 95), 1)
-                graduate_outcome = round(random.uniform(60, 95), 1)
+                # universities use gold/silver/bronze
+                if score >= 85:
+                    rating_label = "Gold"
+                elif score >= 65:
+                    rating_label = "Silver"
+                else:
+                    rating_label = "Bronze"
                 perf_rows.append({
                     "record_id": perf_id,
                     "institution_id": inst["institution_id"],
                     "year": year,
                     "rating": rating_label,
                     "overall_score": score,
-                    "student_satisfaction_pct": student_satisfaction,
-                    "graduate_outcome_pct": graduate_outcome,
-                    "attendance_rate_pct": "",  # not applicable
+                    "student_satisfaction_pct": round(random.uniform(70, 95), 1),
+                    "graduate_outcome_pct": round(random.uniform(60, 95), 1),
+                    "attendance_rate_pct": "",
                 })
             elif cat == "College":
-                rating_label = rating  # use Ofsted-style for colleges
                 perf_rows.append({
                     "record_id": perf_id,
                     "institution_id": inst["institution_id"],
                     "year": year,
-                    "rating": rating_label,
+                    "rating": rating,
                     "overall_score": score,
                     "student_satisfaction_pct": round(random.uniform(65, 92), 1),
                     "graduate_outcome_pct": round(random.uniform(55, 90), 1),
                     "attendance_rate_pct": round(random.uniform(80, 98), 1),
                 })
             else:
-                # Primary / Secondary – Ofsted rating + attendance
+                # primary and secondary schools
                 perf_rows.append({
                     "record_id": perf_id,
                     "institution_id": inst["institution_id"],
@@ -526,49 +474,36 @@ def build():
                 })
             perf_id += 1
 
-    # ---------------------------------------------------------------------
-    # Write CSV files
-    # ---------------------------------------------------------------------
+    # write csv files
     with open(os.path.join(out_dir, "regions.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=["region_id", "name", "country"])
         w.writeheader()
         w.writerows(regions_rows)
 
     with open(os.path.join(out_dir, "institutions.csv"), "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=[
-            "institution_id", "name", "category", "region_id", "region_name",
-            "city", "postcode", "founded_year", "website",
-        ])
+        cols = ["institution_id", "name", "category", "region_id", "region_name", "city", "postcode", "founded_year", "website"]
+        w = csv.DictWriter(f, fieldnames=cols)
         w.writeheader()
         w.writerows(institutions)
 
     with open(os.path.join(out_dir, "performance_records.csv"), "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=[
-            "record_id", "institution_id", "year", "rating", "overall_score",
-            "student_satisfaction_pct", "graduate_outcome_pct", "attendance_rate_pct",
-        ])
+        cols = ["record_id", "institution_id", "year", "rating", "overall_score",
+                "student_satisfaction_pct", "graduate_outcome_pct", "attendance_rate_pct"]
+        w = csv.DictWriter(f, fieldnames=cols)
         w.writeheader()
         w.writerows(perf_rows)
 
-    # Summary
+    # print summary
+    print("regions:", len(regions_rows))
+    print("institutions:", len(institutions))
+    print("performance records:", len(perf_rows))
+
     by_cat = {}
     for inst in institutions:
-        by_cat[inst["category"]] = by_cat.get(inst["category"], 0) + 1
-    by_region = {}
-    for inst in institutions:
-        by_region[inst["region_name"]] = by_region.get(inst["region_name"], 0) + 1
-
-    print("=" * 60)
-    print(f"Regions:              {len(regions_rows)}")
-    print(f"Institutions total:   {len(institutions)}")
-    for c, n in sorted(by_cat.items()):
-        print(f"  - {c}: {n}")
-    print(f"Performance records:  {len(perf_rows)}")
-    print("Institutions by region:")
-    for r, n in sorted(by_region.items(), key=lambda x: -x[1]):
-        print(f"  - {r}: {n}")
-    print("=" * 60)
+        c = inst["category"]
+        by_cat[c] = by_cat.get(c, 0) + 1
+    for c in by_cat:
+        print(" ", c, ":", by_cat[c])
 
 
-if __name__ == "__main__":
-    build()
+main()
