@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'institutions/base.html' %}
 
 {% block content %}
     <h1>Browse Institutions</h1>
@@ -43,7 +43,7 @@
                     <td><input type="checkbox" name="institution_ids" value="{{ institution.id }}"></td>
                     <td>{{ institution.name }}</td>
                     <td>{{ institution.region.name }}</td>
-                    <td>{{ institution.score }}</td>
+                    <td>{{ institution.latest_score }}</td>
                     <td><a href="{% url 'institution_detail' institution.id %}">View</a></td>
                 </tr>
                 {% empty %}

@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const compareCheckboxes = document.querySelectorAll('input[name="institution_ids"]');
     const compareForm = document.querySelector('form[action*="compare"]');
     const maxSelections = 3;
+    const years = JSON.parse(document.getElementById('years-data').textContent);
+    const scores = JSON.parse(document.getElementById('scores-data').textContent);
+    const attendance = JSON.parse(document.getElementById('attendance-data').textContent);
 
     if (compareCheckboxes.length > 0) {
         compareCheckboxes.forEach(checkbox => {

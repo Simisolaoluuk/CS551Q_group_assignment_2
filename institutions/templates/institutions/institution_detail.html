@@ -1,0 +1,75 @@
+{% extends 'institutions/base.html' %}
+
+{% block content %}
+    <h1>{{ institution.name }}</h1>
+    <p><strong>Region:</strong> {{ institution.region.name }}</p>
+    <p><strong>Type:</strong> {{ institution.get_type_display }}</p>
+    
+    <hr>
+    
+    <h2>Key Metrics</h2>
+    <ul>
+        {% if latest_record %}
+            <li><strong>Score:</strong> {{ latest_record.score }}</li>
+            <li><strong>Attendance:</strong> {{ latest_record.attendance }}%</li>
+        {% else %}
+            <li>No performance data available.</li>
+        {% endif %}
+    </ul>
+
+    <h2>Performance Trend</h2>
+
+    <div class="chart-container">
+        <canvas id="performanceChart"></canvas>
+    </div>
+
+    {{ chart_years|json_script:"years-data" }}
+    {{ chart_scores|json_script:"scores-data" }}
+    {{ chart_attendance|json_script:"attendance-data" }}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const ctx = document.getElementById('performanceChart');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: years,
+                datasets: [
+                    {
+                        label: 'Score',
+                        data: scores,
+                        borderWidth: 2,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Attendance',
+                        data: attendance,
+                        borderWidth: 2,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Performance Over Time'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        suggestedMin: 50,
+                        suggestedMax: 100
+                    }
+                }
+            }
+        });
+    </script>
+
+    <br>
+    <a href="{% url 'institution_list' %}">&larr; Back to list</a>
+{% endblock %}
