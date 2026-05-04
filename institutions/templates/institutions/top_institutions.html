@@ -1,63 +1,73 @@
 {% extends 'institutions/base.html' %}
 
 {% block content %}
-<h1>Top Institutions</h1>
+    <h1>Top Institutions</h1>
 
-<form method="GET">
-    <select name="type">
-        <option value="PRIMARY" {% if selected_type == 'PRIMARY' %}selected{% endif %}>Primary</option>
-        <option value="SECONDARY" {% if selected_type == 'SECONDARY' %}selected{% endif %}>Secondary</option>
-        <option value="COLLEGE" {% if selected_type == 'COLLEGE' %}selected{% endif %}>College</option>
-        <option value="UNIVERSITY" {% if selected_type == 'UNIVERSITY' %}selected{% endif %}>University</option>
-    </select>
-
-    <select name="region">
-        {% for region in regions %}
-            <option value="{{ region.name }}" {% if selected_region == region.name %}selected{% endif %}>
-                {{ region.name }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <button type="submit">Show Top</button>
-</form>
-
-<h2>Top {{ selected_type|title }} Institutions in {{ selected_region }}</h2>
-
-<form action="{% url 'compare_institutions' %}" method="GET">
-    <table>
-        <thead>
-            <tr>
-                <th>Rank</th>
-                <th>Name</th>
-                <th>Score</th>
-                <th>Attendance</th>
-                <th>Compare</th>
-                <th>View</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for institution in institutions %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ institution.name }}</td>
-                <td>{{ institution.latest_score }}</td>
-                <td>{{ institution.latest_attendance }}%</td>
-                <td>
-                    <input type="checkbox" name="institution_ids" value="{{ institution.id }}">
-                </td>
-                <td>
-                    <a href="{% url 'institution_detail' institution.id %}">View</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6">No institutions found.</td>
-            </tr>
+    <form method="GET">
+        <select name="category">
+            {% for value, label in category_choices %}
+                <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
             {% endfor %}
-        </tbody>
-    </table>
+        </select>
 
-    <button type="submit">Compare Selected</button>
-</form>
+        <select name="region">
+            <option value="">All Regions</option>
+            {% for region in regions %}
+                <option value="{{ region.name }}" {% if selected_region == region.name %}selected{% endif %}>
+                    {{ region.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Show Top</button>
+    </form>
+
+    <h2>
+        Top {{ selected_category|default:"Institutions" }}
+        {% if selected_region %}
+            in {{ selected_region }}
+        {% else %}
+            across all regions
+        {% endif %}
+    </h2>
+
+    <form action="{% url 'compare_institutions' %}" method="GET">
+        <input type="hidden" name="category" value="{{ selected_category }}">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Region</th>
+                    <th>Score</th>
+                    <th>Attendance</th>
+                    <th>Compare</th>
+                    <th>View</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for institution in institutions %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ institution.name }}</td>
+                        <td>{{ institution.region.name }}</td>
+                        <td>{{ institution.latest_score|default:"N/A" }}</td>
+                        <td>{{ institution.latest_attendance|default:"N/A" }}%</td>
+                        <td><input type="checkbox" name="institution_ids" value="{{ institution.id }}"></td>
+                        <td><a href="{% url 'institution_detail' institution.id %}">View</a></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7">No institutions found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="submit">Compare Selected</button>
+    </form>
 {% endblock %}

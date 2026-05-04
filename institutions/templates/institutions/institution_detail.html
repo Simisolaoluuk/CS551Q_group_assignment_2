@@ -3,15 +3,24 @@
 {% block content %}
     <h1>{{ institution.name }}</h1>
     <p><strong>Region:</strong> {{ institution.region.name }}</p>
-    <p><strong>Type:</strong> {{ institution.get_type_display }}</p>
-    
+    <p><strong>Category:</strong> {{ institution.get_category_display }}</p>
+    <p><strong>City:</strong> {{ institution.city }}</p>
+    <p><strong>Postcode:</strong> {{ institution.postcode }}</p>
+
+    {% if institution.website %}
+        <p><strong>Website:</strong> <a href="{{ institution.website }}" target="_blank">{{ institution.website }}</a></p>
+    {% endif %}
+
     <hr>
-    
+
     <h2>Key Metrics</h2>
     <ul>
         {% if latest_record %}
-            <li><strong>Score:</strong> {{ latest_record.score }}</li>
-            <li><strong>Attendance:</strong> {{ latest_record.attendance }}%</li>
+            <li><strong>Score:</strong> {{ latest_record.overall_score }}</li>
+            <li><strong>Attendance:</strong> {{ latest_record.attendance_rate_pct|default:"N/A" }}%</li>
+            <li><strong>Rating:</strong> {{ latest_record.rating }}</li>
+            <li><strong>Student Satisfaction:</strong> {{ latest_record.student_satisfaction_pct|default:"N/A" }}%</li>
+            <li><strong>Graduate Outcome:</strong> {{ latest_record.graduate_outcome_pct|default:"N/A" }}%</li>
         {% else %}
             <li>No performance data available.</li>
         {% endif %}
@@ -30,6 +39,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+        const years = JSON.parse(document.getElementById('years-data').textContent);
+        const scores = JSON.parse(document.getElementById('scores-data').textContent);
+        const attendance = JSON.parse(document.getElementById('attendance-data').textContent);
+
         const ctx = document.getElementById('performanceChart');
 
         new Chart(ctx, {
@@ -61,8 +74,7 @@
                 },
                 scales: {
                     y: {
-                        beginAtZero: false,
-                        suggestedMin: 50,
+                        suggestedMin: 0,
                         suggestedMax: 100
                     }
                 }
