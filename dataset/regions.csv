@@ -1,13 +1,13 @@
-region_id,name,country
-1,North East England,England
-2,North West England,England
-3,Yorkshire and the Humber,England
-4,East Midlands,England
-5,West Midlands,England
-6,East of England,England
-7,Greater London,England
-8,South East England,England
-9,South West England,England
-10,Scotland,Scotland
-11,Wales,Wales
-12,Northern Ireland,Northern Ireland
+region_id,name,country,main_city
+1,North East England,England,Newcastle upon Tyne
+2,North West England,England,Manchester
+3,Yorkshire and the Humber,England,Leeds
+4,East Midlands,England,Nottingham
+5,West Midlands,England,Birmingham
+6,East of England,England,Cambridge
+7,Greater London,England,London
+8,South East England,England,Oxford
+9,South West England,England,Bristol
+10,Scotland,Scotland,Edinburgh
+11,Wales,Wales,Cardiff
+12,Northern Ireland,Northern Ireland,Belfast
