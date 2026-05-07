@@ -47,20 +47,14 @@ class Command(BaseCommand):
         with open(os.path.join(data_dir, "institutions.csv"), encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                kwargs = {
-                    "name": row["name"],
-                    "category": row["category"],
-                    "region": region_map[int(row["region_id"])],
-                    "city": row["city"],
-                    "postcode": row["postcode"],
-                    "founded_year": int(row["founded_year"]) if row["founded_year"] else None,
-                    "website": row["website"] or "",
-                }
-                # image_url is a new field, only add it if model has it
-                if "image_url" in row:
-                    kwargs["image_url"] = row["image_url"]
-
-                inst = Institution.objects.create(**kwargs)
+                inst = Institution.objects.create(
+                    name=row["name"],
+                    category=row["category"],
+                    region=region_map[int(row["region_id"])],
+                    city=row["city"],
+                    postcode=row["postcode"],
+                    founded_year=int(row["founded_year"]) if row["founded_year"] else None,
+                )
                 inst_map[int(row["institution_id"])] = inst
         print("institutions done:", len(inst_map))
 

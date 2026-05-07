@@ -314,14 +314,6 @@ SECONDARY_SUFFIXES = [
 OFSTED = ["Outstanding", "Good", "Requires Improvement", "Inadequate"]
 OFSTED_WEIGHTS = [0.20, 0.65, 0.12, 0.03]
 
-# default image by category (local images in dataset/images/)
-CATEGORY_IMAGES = {
-    "University": "images/university.jpg",
-    "College": "images/college.jpg",
-    "Secondary School": "images/secondary_school.jpg",
-    "Primary School": "images/primary_school.jpg",
-}
-
 
 def make_school_name(level, used_names):
     # pick a random name and check it's not already used
@@ -396,7 +388,7 @@ def get_score(rating):
     return random.randint(20, 44)
 
 
-def make_institution_dict(inst_id, name, category, region, city, region_id_map, founded_year, website=""):
+def make_institution_dict(inst_id, name, category, region, city, region_id_map, founded_year):
     return {
         "institution_id": inst_id,
         "name": name,
@@ -406,8 +398,6 @@ def make_institution_dict(inst_id, name, category, region, city, region_id_map, 
         "city": city,
         "postcode": make_postcode(city),
         "founded_year": founded_year,
-        "website": website,
-        "image_url": CATEGORY_IMAGES.get(category, ""),
     }
 
 
@@ -438,7 +428,7 @@ def main():
         founded = random.randint(1100, 2010) if "Oxford" in uni_name or "Cambridge" in uni_name else random.randint(1820, 2010)
         institutions.append(make_institution_dict(
             inst_id, uni_name, "University", region, city, region_id_map,
-            founded, ""
+            founded
         ))
         used_names.add(uni_name)
         inst_id += 1
@@ -447,7 +437,7 @@ def main():
     for col_name, region, city in COLLEGES:
         institutions.append(make_institution_dict(
             inst_id, col_name, "College", region, city, region_id_map,
-            random.randint(1900, 2015), ""
+            random.randint(1900, 2015)
         ))
         used_names.add(col_name)
         inst_id += 1
@@ -496,7 +486,7 @@ def main():
             used_names.add(uni_name)
             institutions.append(make_institution_dict(
                 inst_id, uni_name, "University", region, city, region_id_map,
-                random.randint(1900, 2010), ""
+                random.randint(1900, 2010)
             ))
             inst_id += 1
         if city not in cities_with_college:
@@ -506,7 +496,7 @@ def main():
             used_names.add(col_name)
             institutions.append(make_institution_dict(
                 inst_id, col_name, "College", region, city, region_id_map,
-                random.randint(1950, 2015), ""
+                random.randint(1950, 2015)
             ))
             inst_id += 1
 
@@ -599,7 +589,7 @@ def main():
         w.writerows(regions_rows)
 
     with open(os.path.join(out_dir, "institutions.csv"), "w", newline="", encoding="utf-8") as f:
-        cols = ["institution_id", "name", "category", "region_id", "region_name", "city", "postcode", "founded_year", "website", "image_url"]
+        cols = ["institution_id", "name", "category", "region_id", "region_name", "city", "postcode", "founded_year"]
         w = csv.DictWriter(f, fieldnames=cols)
         w.writeheader()
         w.writerows(institutions)

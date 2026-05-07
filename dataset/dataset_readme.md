@@ -24,16 +24,21 @@ Every city in the dataset has at least one university, one college, one primary 
 
 To regenerate the csv files:
 
+```
 python generate_dataset.py
+```
 
 To load the data into django, copy load_data.py to:
 
+```
 institutions/management/commands/load_data.py
+```
 
 Then run:
 
+```
 python manage.py load_data
-
+```
 
 ## Fields
 
@@ -52,8 +57,6 @@ institutions.csv:
 - city
 - postcode
 - founded_year
-- website
-- image_url (free unsplash image, one default image per category)
 
 performance_records.csv:
 - record_id
