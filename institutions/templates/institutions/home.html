@@ -1,0 +1,49 @@
+{% extends 'institutions/base.html' %}
+
+{% block content %}
+    <h1>Welcome to the Institution Dashboard</h1>
+
+    <form action="{% url 'institution_list' %}" method="GET" style="margin-bottom: 20px;">
+        <input type="text" name="q" placeholder="Search institutions..." required>
+        <button type="submit">Search</button>
+    </form>
+
+    <div class="quick-actions" style="margin-bottom: 20px;">
+        <a href="{% url 'institution_list' %}"><button>Browse Institutions</button></a>
+        <a href="{% url 'compare_institutions' %}"><button>Compare Institutions</button></a>
+        <a href="{% url 'top_institutions' %}"><button>Top Institutions</button></a>
+    </div>
+
+    {% for group in top_institutions_by_category %}
+        <h2>Top 3 {{ group.category_label }} Institutions</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Institution</th>
+                    <th>Region</th>
+                    <th>Score</th>
+                    <th>Attendance</th>
+                    <th>Trend</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for institution in group.institutions %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ institution.name }}</td>
+                        <td>{{ institution.region.name }}</td>
+                        <td>{{ institution.latest_score|default:"N/A" }}</td>
+                        <td>{{ institution.latest_attendance|default:"N/A" }}%</td>
+                        <td><a href="{% url 'institution_detail' institution.id %}" class="table-link">View</a></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">No institutions available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'institutions/base.html' %}
+
+{% block content %}
+    <section class="auth-card" aria-labelledby="register-heading">
+        <div class="auth-card__intro">
+            <p class="eyebrow">Create account</p>
+            <h1 id="register-heading">Register for the dashboard</h1>
+            <p>Sign up to start managing institution searches and comparisons from one place.</p>
+        </div>
+
+        <form class="auth-form" method="POST">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+
+                {% if field.help_text %}
+                    <small class="help-text">{{ field.help_text }}</small>
+                {% endif %}
+
+                {% for error in field.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+
+            <button type="submit">Register</button>
+        </form>
+
+        <p class="auth-switch">
+            Already have an account?
+            <a href="{% url 'login' %}">Log in</a>
+        </p>
+    </section>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends 'institutions/base.html' %}
+
+{% block content %}
+    <h1>{{ institution.name }}</h1>
+
+    <p><strong>Region:</strong> {{ institution.region.name }}</p>
+    <p><strong>Category:</strong> {{ institution.category }}</p>
+    {% if institution.city %}
+        <p><strong>City:</strong> {{ institution.city }}</p>
+    {% endif %}
+
+    {% if institution.postcode %}
+        <p><strong>Postcode:</strong> {{ institution.postcode }}</p>
+    {% endif %}
+
+    {% if institution.founded_year %}
+        <p><strong>Founded:</strong> {{ institution.founded_year }}</p>
+    {% endif %}
+
+    {% if institution.website %}
+        <p>
+            <strong>Website:</strong>
+            <a href="{{ institution.website }}" target="_blank">
+                Visit Website
+            </a>
+        </p>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        {% if is_favourite %}
+            <a href="{% url 'remove_favourite' institution.id %}">
+                <button>Remove from Favourites</button>
+            </a>
+        {% else %}
+            <a href="{% url 'add_favourite' institution.id %}">
+                <button>Add to Favourites</button>
+            </a>
+        {% endif %}
+    {% endif %}
+
+    {% if not user.is_authenticated %}
+        <p class="login-favourite-notice">
+            <a href="{% url 'login' %}">Login</a> to save this institution as a favourite.
+        </p>
+    {% endif %}
+
+    <hr>
+
+    <h2>Key Metrics</h2>
+    <ul>
+        {% if latest_record %}
+            <li><strong>Score:</strong> {{ latest_record.overall_score }}</li>
+            <li><strong>Attendance:</strong> {{ latest_record.attendance_rate_pct|default:"N/A" }}%</li>
+            <li><strong>Rating:</strong> {{ latest_record.rating }}</li>
+            <li><strong>Student Satisfaction:</strong> {{ latest_record.student_satisfaction_pct|default:"N/A" }}%</li>
+            <li><strong>Graduate Outcome:</strong> {{ latest_record.graduate_outcome_pct|default:"N/A" }}%</li>
+        {% else %}
+            <li>No performance data available.</li>
+        {% endif %}
+    </ul>
+
+    <h2>Performance Trend</h2>
+
+    <div class="chart-container">
+        <canvas id="performanceChart"></canvas>
+    </div>
+
+    {{ chart_years|json_script:"years-data" }}
+    {{ chart_scores|json_script:"scores-data" }}
+    {{ chart_attendance|json_script:"attendance-data" }}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const years = JSON.parse(document.getElementById('years-data').textContent);
+        const scores = JSON.parse(document.getElementById('scores-data').textContent);
+        const attendance = JSON.parse(document.getElementById('attendance-data').textContent);
+
+        const ctx = document.getElementById('performanceChart');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: years,
+                datasets: [
+                    {
+                        label: 'Score',
+                        data: scores,
+                        borderWidth: 2,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Attendance',
+                        data: attendance,
+                        borderWidth: 2,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Performance Over Time'
+                    }
+                },
+                scales: {
+                    y: {
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                }
+            }
+        });
+    </script>
+
+    <br>
+    <a href="{% url 'institution_list' %}" class="back-link">&larr; Back to list</a>
+{% endblock %}

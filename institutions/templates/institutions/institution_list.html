@@ -1,0 +1,83 @@
+{% extends 'institutions/base.html' %}
+
+{% block content %}
+    <h1>Browse Institutions</h1>
+
+    <form method="GET" style="margin-bottom: 20px;">
+        <select name="category" required>
+            {% for value, label in category_choices %}
+                <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="region">
+            <option value="">All Regions</option>
+            {% for region in regions %}
+                <option value="{{ region.name }}" {% if selected_region == region.name %}selected{% endif %}>
+                    {{ region.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <input type="text" name="q" placeholder="Search..." value="{{ search_query|default:'' }}">
+
+        <select name="sort">
+            <option value="score" {% if selected_sort == "score" %}selected{% endif %}>Sort by Score</option>
+            <option value="name" {% if selected_sort == "name" %}selected{% endif %}>Sort by Name</option>
+        </select>
+
+        <button type="submit">Apply</button>
+    </form>
+
+    <form action="{% url 'compare_institutions' %}" method="GET">
+        <input type="hidden" name="category" value="{{ selected_category }}">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Compare</th>
+                    <th>Name</th>
+                    <th>Region</th>
+                    <th>Score</th>
+                    <th>Attendance</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for institution in page_obj %}
+                    <tr>
+                        <td><input type="checkbox" name="institution_ids" value="{{ institution.id }}"></td>
+                        <td>{{ institution.name }}</td>
+                        <td>{{ institution.region.name }}</td>
+                        <td>{{ institution.latest_score|default:"N/A" }}</td>
+                        <td>{{ institution.latest_attendance|default:"N/A" }}%</td>
+                        <td><a href="{% url 'institution_detail' institution.id %}" class="table-link">View</a></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">No institutions found for this category/region.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <br>
+        <button type="submit" class="compare-btn">Compare Selected</button>
+    </form>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?category={{ selected_category }}&region={{ selected_region|default:'' }}&q={{ search_query|default:'' }}&sort={{ selected_sort }}&page=1">&laquo; First</a>
+            <a href="?category={{ selected_category }}&region={{ selected_region|default:'' }}&q={{ search_query|default:'' }}&sort={{ selected_sort }}&page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?category={{ selected_category }}&region={{ selected_region|default:'' }}&q={{ search_query|default:'' }}&sort={{ selected_sort }}&page={{ page_obj.next_page_number }}">Next</a>
+            <a href="?category={{ selected_category }}&region={{ selected_region|default:'' }}&q={{ search_query|default:'' }}&sort={{ selected_sort }}&page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'institutions/base.html' %}
+
+{% block content %}
+    <h1>My Favourite Institutions</h1>
+
+    {% if favourites %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Region</th>
+                    <th>View</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for favourite in favourites %}
+                    <tr>
+                        <td>{{ favourite.institution.name }}</td>
+                        <td>{{ favourite.institution.get_category_display }}</td>
+                        <td>{{ favourite.institution.region.name }}</td>
+                        <td>
+                            <a href="{% url 'institution_detail' favourite.institution.id %}" class="table-link">View</a>
+                        </td>
+                        <td>
+                            <a href="{% url 'remove_favourite' favourite.institution.id %}" class="table-link">Remove</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have not added any favourite institutions yet.</p>
+    {% endif %}
+{% endblock %}
