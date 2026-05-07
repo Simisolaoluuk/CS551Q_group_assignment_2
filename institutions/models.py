@@ -15,7 +15,7 @@ class Region(models.Model):
     class Meta:
         ordering = ["name"]
 
-    # Human-readable display in admin panel
+    # String representation
     def __str__(self):
         return self.name
 
