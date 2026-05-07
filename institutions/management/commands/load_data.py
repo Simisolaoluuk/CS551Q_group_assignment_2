@@ -30,17 +30,15 @@ class Command(BaseCommand):
         with open(os.path.join(data_dir, "regions.csv"), encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                # main_city is a new field, may not exist in older models
+            
                 kwargs = {
                     "name": row["name"],
                     "country": row["country"],
                 }
-                if "main_city" in row:
-                    kwargs["main_city"] = row["main_city"]
 
                 r = Region.objects.create(**kwargs)
                 region_map[int(row["region_id"])] = r
-        print("regions done:", len(region_map))
+        print("regions loaded:", len(region_map))
 
         # load institutions
         inst_map = {}
@@ -54,15 +52,11 @@ class Command(BaseCommand):
                     "city": row["city"],
                     "postcode": row["postcode"],
                     "founded_year": int(row["founded_year"]) if row["founded_year"] else None,
-                    "website": row["website"] or "",
                 }
-                # image_url is a new field, only add it if model has it
-                if "image_url" in row:
-                    kwargs["image_url"] = row["image_url"]
 
                 inst = Institution.objects.create(**kwargs)
                 inst_map[int(row["institution_id"])] = inst
-        print("institutions done:", len(inst_map))
+        print("institutions loaded:", len(inst_map))
 
         # load performance records
         records = []
@@ -81,5 +75,5 @@ class Command(BaseCommand):
 
         # bulk create is faster
         PerformanceRecord.objects.bulk_create(records, batch_size=500)
-        print("performance records done:", len(records))
+        print("performance records loaded:", len(records))
         print("all data loaded.")

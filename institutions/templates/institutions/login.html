@@ -2,18 +2,19 @@
 
 {% block content %}
     <section class="auth-card" aria-labelledby="login-heading">
+        <!-- Authentication page introduction -->
         <div class="auth-card__intro">
             <p class="eyebrow">Welcome back</p>
             <h1 id="login-heading">Log in to your account</h1>
             <p>Access saved comparisons and continue exploring institution performance insights.</p>
         </div>
 
+        <!-- Login form -->
         <form class="auth-form" method="POST">
             {% csrf_token %}
 
             {% for field in form %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-
                 {{ field }}
 
                 {% for error in field.errors %}
@@ -21,9 +22,10 @@
                 {% endfor %}
             {% endfor %}
 
-            <button type="submit">Login</button>
+            <button type="submit" class="default-btn">Login</button>
         </form>
 
+        <!-- Registration link -->
         <p class="auth-switch">
             New to the dashboard?
             <a href="{% url 'register' %}">Create an account</a>
