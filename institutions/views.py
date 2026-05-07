@@ -216,6 +216,7 @@ def logout_view(request):
 
 
 @login_required
+@require_POST
 def add_favourite(request, pk):
     institution = get_object_or_404(Institution, pk=pk)
 
@@ -229,6 +230,7 @@ def add_favourite(request, pk):
 
 
 @login_required
+@require_POST
 def remove_favourite(request, pk):
     institution = get_object_or_404(Institution, pk=pk)
 

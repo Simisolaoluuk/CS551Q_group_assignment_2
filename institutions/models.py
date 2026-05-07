@@ -24,7 +24,6 @@ class Institution(models.Model):
     name = models.CharField(max_length=200)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
-
     city = models.CharField(max_length=100, blank=True)
     postcode = models.CharField(max_length=20, blank=True)
     founded_year = models.IntegerField(null=True, blank=True)

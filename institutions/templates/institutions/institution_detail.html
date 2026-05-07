@@ -28,13 +28,15 @@
 
     {% if user.is_authenticated %}
         {% if is_favourite %}
-            <a href="{% url 'remove_favourite' institution.id %}">
-                <button>Remove from Favourites</button>
-            </a>
+            <form action="{% url 'remove_favourite' institution.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit">Remove from Favourites</button>
+            </form>
         {% else %}
-            <a href="{% url 'add_favourite' institution.id %}">
-                <button>Add to Favourites</button>
-            </a>
+            <form action="{% url 'add_favourite' institution.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit">Add to Favourites</button>
+            </form>
         {% endif %}
     {% endif %}
 
