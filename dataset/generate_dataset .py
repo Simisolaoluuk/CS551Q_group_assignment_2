@@ -8,20 +8,21 @@ import os
 random.seed(42)
 
 
-# uk regions
+# uk regions with main city
+# (region name, country, main city)
 REGIONS = [
-    ("North East England", "England"),
-    ("North West England", "England"),
-    ("Yorkshire and the Humber", "England"),
-    ("East Midlands", "England"),
-    ("West Midlands", "England"),
-    ("East of England", "England"),
-    ("Greater London", "England"),
-    ("South East England", "England"),
-    ("South West England", "England"),
-    ("Scotland", "Scotland"),
-    ("Wales", "Wales"),
-    ("Northern Ireland", "Northern Ireland"),
+    ("North East England", "England", "Newcastle upon Tyne"),
+    ("North West England", "England", "Manchester"),
+    ("Yorkshire and the Humber", "England", "Leeds"),
+    ("East Midlands", "England", "Nottingham"),
+    ("West Midlands", "England", "Birmingham"),
+    ("East of England", "England", "Cambridge"),
+    ("Greater London", "England", "London"),
+    ("South East England", "England", "Oxford"),
+    ("South West England", "England", "Bristol"),
+    ("Scotland", "Scotland", "Edinburgh"),
+    ("Wales", "Wales", "Cardiff"),
+    ("Northern Ireland", "Northern Ireland", "Belfast"),
 ]
 
 # cities for each region
@@ -40,7 +41,7 @@ CITY_BY_REGION = {
     "Northern Ireland": ["Belfast", "Londonderry", "Lisburn", "Newry", "Armagh"],
 }
 
-# real uk universities
+# real uk universities (city must match CITY_BY_REGION above)
 UNIVERSITIES = [
     ("Imperial College London", "Greater London", "London"),
     ("University College London", "Greater London", "London"),
@@ -48,83 +49,124 @@ UNIVERSITIES = [
     ("London School of Economics", "Greater London", "London"),
     ("Queen Mary University of London", "Greater London", "London"),
     ("City, University of London", "Greater London", "London"),
-    ("Brunel University London", "Greater London", "London"),
-    ("Goldsmiths, University of London", "Greater London", "London"),
+    ("Goldsmiths, University of London", "Greater London", "Camden"),
     ("SOAS University of London", "Greater London", "London"),
-    ("University of Westminster", "Greater London", "London"),
+    ("University of Westminster", "Greater London", "Westminster"),
     ("University of East London", "Greater London", "London"),
     ("Middlesex University", "Greater London", "London"),
     ("London South Bank University", "Greater London", "London"),
-    ("Kingston University", "Greater London", "London"),
+    ("Kingston University", "Greater London", "Croydon"),
+    ("University of Roehampton", "Greater London", "Bromley"),
+    ("University of West London", "Greater London", "Ealing"),
+    ("University of Greenwich", "Greater London", "Hackney"),
+
     ("University of Oxford", "South East England", "Oxford"),
+    ("Oxford Brookes University", "South East England", "Oxford"),
+    ("University of Reading", "South East England", "Reading"),
+    ("University of Sussex", "South East England", "Brighton"),
+    ("University of Brighton", "South East England", "Brighton"),
+    ("University of Southampton", "South East England", "Southampton"),
+    ("Solent University", "South East England", "Southampton"),
+    ("University of Portsmouth", "South East England", "Portsmouth"),
+    ("University of Kent", "South East England", "Canterbury"),
+    ("Canterbury Christ Church University", "South East England", "Canterbury"),
+    ("University of Buckingham", "South East England", "Milton Keynes"),
+
     ("University of Cambridge", "East of England", "Cambridge"),
+    ("Anglia Ruskin University", "East of England", "Cambridge"),
+    ("University of East Anglia", "East of England", "Norwich"),
+    ("Norwich University of the Arts", "East of England", "Norwich"),
+    ("University of Suffolk", "East of England", "Ipswich"),
+    ("University of Essex", "East of England", "Colchester"),
+    ("University of Hertfordshire", "East of England", "Luton"),
+    ("University of Bedfordshire", "East of England", "Luton"),
+    ("Anglia Ruskin Peterborough", "East of England", "Peterborough"),
+
     ("University of Manchester", "North West England", "Manchester"),
-    ("University of Liverpool", "North West England", "Liverpool"),
-    ("Lancaster University", "North West England", "Lancaster"),
-    ("University of Central Lancashire", "North West England", "Preston"),
-    ("Liverpool John Moores University", "North West England", "Liverpool"),
     ("Manchester Metropolitan University", "North West England", "Manchester"),
+    ("University of Liverpool", "North West England", "Liverpool"),
+    ("Liverpool John Moores University", "North West England", "Liverpool"),
+    ("Lancaster University", "North West England", "Lancaster"),
+    ("University of Cumbria", "North West England", "Lancaster"),
+    ("University of Central Lancashire", "North West England", "Preston"),
+    ("Edge Hill University", "North West England", "Blackpool"),
+    ("University of Chester", "North West England", "Chester"),
+    ("University of Bolton", "North West England", "Bolton"),
+
     ("University of Leeds", "Yorkshire and the Humber", "Leeds"),
+    ("Leeds Beckett University", "Yorkshire and the Humber", "Leeds"),
     ("University of Sheffield", "Yorkshire and the Humber", "Sheffield"),
+    ("Sheffield Hallam University", "Yorkshire and the Humber", "Sheffield"),
     ("University of York", "Yorkshire and the Humber", "York"),
+    ("York St John University", "Yorkshire and the Humber", "York"),
     ("University of Bradford", "Yorkshire and the Humber", "Bradford"),
     ("University of Hull", "Yorkshire and the Humber", "Hull"),
-    ("Sheffield Hallam University", "Yorkshire and the Humber", "Sheffield"),
-    ("Leeds Beckett University", "Yorkshire and the Humber", "Leeds"),
+    ("University of Doncaster", "Yorkshire and the Humber", "Doncaster"),
+
     ("University of Birmingham", "West Midlands", "Birmingham"),
-    ("University of Warwick", "West Midlands", "Coventry"),
-    ("Aston University", "West Midlands", "Birmingham"),
-    ("Coventry University", "West Midlands", "Coventry"),
     ("Birmingham City University", "West Midlands", "Birmingham"),
+    ("Aston University", "West Midlands", "Birmingham"),
+    ("University of Warwick", "West Midlands", "Coventry"),
+    ("Coventry University", "West Midlands", "Coventry"),
+    ("University of Wolverhampton", "West Midlands", "Wolverhampton"),
     ("Keele University", "West Midlands", "Stoke-on-Trent"),
+    ("Staffordshire University", "West Midlands", "Stoke-on-Trent"),
+    ("University of Worcester", "West Midlands", "Worcester"),
+
     ("University of Nottingham", "East Midlands", "Nottingham"),
     ("Nottingham Trent University", "East Midlands", "Nottingham"),
     ("University of Leicester", "East Midlands", "Leicester"),
     ("De Montfort University", "East Midlands", "Leicester"),
-    ("University of Lincoln", "East Midlands", "Lincoln"),
     ("University of Derby", "East Midlands", "Derby"),
+    ("University of Lincoln", "East Midlands", "Lincoln"),
+    ("University of Northampton", "East Midlands", "Northampton"),
+
     ("University of Bristol", "South West England", "Bristol"),
+    ("University of the West of England", "South West England", "Bristol"),
     ("University of Bath", "South West England", "Bath"),
+    ("Bath Spa University", "South West England", "Bath"),
     ("University of Exeter", "South West England", "Exeter"),
     ("University of Plymouth", "South West England", "Plymouth"),
-    ("Bath Spa University", "South West England", "Bath"),
-    ("University of the West of England", "South West England", "Bristol"),
     ("Bournemouth University", "South West England", "Bournemouth"),
-    ("University of Southampton", "South East England", "Southampton"),
-    ("University of Reading", "South East England", "Reading"),
-    ("University of Sussex", "South East England", "Brighton"),
-    ("University of Brighton", "South East England", "Brighton"),
-    ("University of Portsmouth", "South East England", "Portsmouth"),
-    ("University of Kent", "South East England", "Canterbury"),
-    ("Oxford Brookes University", "South East England", "Oxford"),
-    ("University of Surrey", "South East England", "Reading"),
-    ("Anglia Ruskin University", "East of England", "Cambridge"),
-    ("University of East Anglia", "East of England", "Norwich"),
-    ("University of Essex", "East of England", "Colchester"),
-    ("University of Hertfordshire", "East of England", "Luton"),
+    ("Arts University Bournemouth", "South West England", "Bournemouth"),
+    ("University of Gloucestershire", "South West England", "Gloucester"),
+
     ("Newcastle University", "North East England", "Newcastle upon Tyne"),
-    ("Durham University", "North East England", "Durham"),
     ("Northumbria University", "North East England", "Newcastle upon Tyne"),
+    ("University of Sunderland", "North East England", "Sunderland"),
+    ("Durham University", "North East England", "Durham"),
     ("Teesside University", "North East England", "Middlesbrough"),
+    ("Gateshead College HE", "North East England", "Gateshead"),
+
     ("University of Edinburgh", "Scotland", "Edinburgh"),
-    ("University of Glasgow", "Scotland", "Glasgow"),
-    ("University of St Andrews", "Scotland", "Edinburgh"),
-    ("University of Aberdeen", "Scotland", "Aberdeen"),
-    ("University of Dundee", "Scotland", "Dundee"),
-    ("University of Stirling", "Scotland", "Stirling"),
     ("Heriot-Watt University", "Scotland", "Edinburgh"),
-    ("University of Strathclyde", "Scotland", "Glasgow"),
     ("Edinburgh Napier University", "Scotland", "Edinburgh"),
+    ("University of Glasgow", "Scotland", "Glasgow"),
+    ("University of Strathclyde", "Scotland", "Glasgow"),
     ("Glasgow Caledonian University", "Scotland", "Glasgow"),
+    ("University of Aberdeen", "Scotland", "Aberdeen"),
     ("Robert Gordon University", "Scotland", "Aberdeen"),
+    ("University of Dundee", "Scotland", "Dundee"),
+    ("Abertay University", "Scotland", "Dundee"),
+    ("University of Stirling", "Scotland", "Stirling"),
+    ("University of the Highlands and Islands", "Scotland", "Inverness"),
+
     ("Cardiff University", "Wales", "Cardiff"),
-    ("Swansea University", "Wales", "Swansea"),
-    ("Aberystwyth University", "Wales", "Aberystwyth"),
-    ("Bangor University", "Wales", "Bangor"),
     ("Cardiff Metropolitan University", "Wales", "Cardiff"),
+    ("Swansea University", "Wales", "Swansea"),
+    ("University of Wales Trinity Saint David", "Wales", "Swansea"),
     ("University of South Wales", "Wales", "Newport"),
+    ("Bangor University", "Wales", "Bangor"),
+    ("Wrexham University", "Wales", "Wrexham"),
+    ("Aberystwyth University", "Wales", "Aberystwyth"),
+
     ("Queen's University Belfast", "Northern Ireland", "Belfast"),
     ("Ulster University", "Northern Ireland", "Belfast"),
+    ("Stranmillis University College", "Northern Ireland", "Belfast"),
+    ("Open University in Ireland", "Northern Ireland", "Londonderry"),
+    ("Lisburn Institute HE", "Northern Ireland", "Lisburn"),
+    ("Newry Institute HE", "Northern Ireland", "Newry"),
+    ("Armagh Theological College", "Northern Ireland", "Armagh"),
 ]
 
 # real uk colleges
@@ -135,8 +177,8 @@ COLLEGES = [
     ("Plymouth College of Art", "South West England", "Plymouth"),
     ("South Devon College", "South West England", "Plymouth"),
     ("Gloucestershire College", "South West England", "Gloucester"),
-    ("Cornwall College", "South West England", "Plymouth"),
-    ("New College Swindon", "South West England", "Bristol"),
+    ("Bournemouth and Poole College", "South West England", "Bournemouth"),
+
     ("Manchester College", "North West England", "Manchester"),
     ("Liverpool City College", "North West England", "Liverpool"),
     ("Preston College", "North West England", "Preston"),
@@ -144,36 +186,46 @@ COLLEGES = [
     ("Bolton College", "North West England", "Bolton"),
     ("Salford City College", "North West England", "Manchester"),
     ("Lancaster and Morecambe College", "North West England", "Lancaster"),
+    ("Cheshire College South and West", "North West England", "Chester"),
+
     ("Leeds City College", "Yorkshire and the Humber", "Leeds"),
     ("Sheffield College", "Yorkshire and the Humber", "Sheffield"),
     ("Bradford College", "Yorkshire and the Humber", "Bradford"),
     ("York College", "Yorkshire and the Humber", "York"),
     ("Doncaster College", "Yorkshire and the Humber", "Doncaster"),
     ("Hull College", "Yorkshire and the Humber", "Hull"),
+
     ("Birmingham Metropolitan College", "West Midlands", "Birmingham"),
     ("South and City College Birmingham", "West Midlands", "Birmingham"),
     ("Solihull College", "West Midlands", "Birmingham"),
     ("Coventry College", "West Midlands", "Coventry"),
     ("City of Wolverhampton College", "West Midlands", "Wolverhampton"),
     ("Stoke on Trent College", "West Midlands", "Stoke-on-Trent"),
+    ("Heart of Worcestershire College", "West Midlands", "Worcester"),
+
     ("Nottingham College", "East Midlands", "Nottingham"),
     ("Leicester College", "East Midlands", "Leicester"),
     ("Derby College", "East Midlands", "Derby"),
     ("Lincoln College", "East Midlands", "Lincoln"),
     ("Northampton College", "East Midlands", "Northampton"),
+
     ("Cambridge Regional College", "East of England", "Cambridge"),
     ("City College Norwich", "East of England", "Norwich"),
     ("Suffolk New College", "East of England", "Ipswich"),
     ("Peterborough College", "East of England", "Peterborough"),
     ("Colchester Institute", "East of England", "Colchester"),
+    ("Luton Sixth Form College", "East of England", "Luton"),
+
     ("City and Islington College", "Greater London", "London"),
-    ("Westminster Kingsway College", "Greater London", "London"),
+    ("Westminster Kingsway College", "Greater London", "Westminster"),
     ("Ealing, Hammersmith and West London College", "Greater London", "Ealing"),
     ("Croydon College", "Greater London", "Croydon"),
     ("Hackney Community College", "Greater London", "Hackney"),
     ("Newham College", "Greater London", "London"),
     ("Lambeth College", "Greater London", "London"),
     ("Bromley College", "Greater London", "Bromley"),
+    ("Camden College", "Greater London", "Camden"),
+
     ("Oxford City College", "South East England", "Oxford"),
     ("Reading College", "South East England", "Reading"),
     ("Brighton MET College", "South East England", "Brighton"),
@@ -181,27 +233,32 @@ COLLEGES = [
     ("Portsmouth College", "South East England", "Portsmouth"),
     ("Canterbury College", "South East England", "Canterbury"),
     ("Milton Keynes College", "South East England", "Milton Keynes"),
+
     ("Newcastle College", "North East England", "Newcastle upon Tyne"),
     ("Sunderland College", "North East England", "Sunderland"),
     ("New College Durham", "North East England", "Durham"),
     ("Middlesbrough College", "North East England", "Middlesbrough"),
     ("Gateshead College", "North East England", "Gateshead"),
+
     ("Edinburgh College", "Scotland", "Edinburgh"),
     ("Glasgow Clyde College", "Scotland", "Glasgow"),
     ("North East Scotland College", "Scotland", "Aberdeen"),
     ("Dundee and Angus College", "Scotland", "Dundee"),
     ("Forth Valley College", "Scotland", "Stirling"),
     ("Inverness College UHI", "Scotland", "Inverness"),
-    ("City of Glasgow College", "Scotland", "Glasgow"),
+
     ("Cardiff and Vale College", "Wales", "Cardiff"),
     ("Gower College Swansea", "Wales", "Swansea"),
     ("Coleg Gwent", "Wales", "Newport"),
     ("Coleg Cambria", "Wales", "Wrexham"),
-    ("Coleg Sir Gar", "Wales", "Swansea"),
+    ("Coleg Ceredigion", "Wales", "Aberystwyth"),
+    ("Bangor College", "Wales", "Bangor"),
+
     ("Belfast Metropolitan College", "Northern Ireland", "Belfast"),
     ("Northern Regional College", "Northern Ireland", "Lisburn"),
     ("South Eastern Regional College", "Northern Ireland", "Newry"),
     ("South West College", "Northern Ireland", "Armagh"),
+    ("North West Regional College", "Northern Ireland", "Londonderry"),
 ]
 
 # words for making up school names
@@ -214,6 +271,8 @@ PRIMARY_PREFIXES = [
     "Victoria", "Albert", "Queen Elizabeth", "King Edward",
     "Town End", "The Grove", "The Manor", "The Avenue",
     "Ashwood", "Beechwood", "Pinewood", "Forestdale",
+    "Garden", "Lakeside", "Sunnyfield", "Greenview", "Fairfield",
+    "Mount Pleasant", "Bridgewater", "Ridgeway", "Hilltop", "Valley",
 ]
 
 PRIMARY_SUFFIXES = [
@@ -236,6 +295,8 @@ SECONDARY_PREFIXES = [
     "The Henry", "The William", "The Thomas",
     "Greenacre", "Brookvale", "Riverdale", "Oakridge",
     "City", "County", "Regional",
+    "The Royal", "Stanton", "Wakefield", "Bromfield", "Ashford",
+    "Hartfield", "Lakemoor", "Whitestone", "Greystone", "Northwood",
 ]
 
 SECONDARY_SUFFIXES = [
@@ -327,16 +388,34 @@ def get_score(rating):
     return random.randint(20, 44)
 
 
+def make_institution_dict(inst_id, name, category, region, city, region_id_map, founded_year):
+    return {
+        "institution_id": inst_id,
+        "name": name,
+        "category": category,
+        "region_id": region_id_map[region],
+        "region_name": region,
+        "city": city,
+        "postcode": make_postcode(city),
+        "founded_year": founded_year,
+    }
+
+
 def main():
     out_dir = os.path.dirname(os.path.abspath(__file__))
 
-    # build regions
+    # build regions with main_city
     regions_rows = []
     region_id_map = {}
     rid = 1
-    for name, country in REGIONS:
+    for name, country, main_city in REGIONS:
         region_id_map[name] = rid
-        regions_rows.append({"region_id": rid, "name": name, "country": country})
+        regions_rows.append({
+            "region_id": rid,
+            "name": name,
+            "country": country,
+            "main_city": main_city,
+        })
         rid += 1
 
     # build institutions
@@ -346,39 +425,82 @@ def main():
 
     # add universities
     for uni_name, region, city in UNIVERSITIES:
-        clean = uni_name.lower().replace(" ", "").replace(",", "").replace("'", "")
-        institutions.append({
-            "institution_id": inst_id,
-            "name": uni_name,
-            "category": "University",
-            "region_id": region_id_map[region],
-            "region_name": region,
-            "city": city,
-            "postcode": make_postcode(city),
-            "founded_year": random.randint(1100, 2010) if "Oxford" in uni_name or "Cambridge" in uni_name else random.randint(1820, 2010),
-            "website": "https://www." + clean[:25] + ".ac.uk",
-        })
+        founded = random.randint(1100, 2010) if "Oxford" in uni_name or "Cambridge" in uni_name else random.randint(1820, 2010)
+        institutions.append(make_institution_dict(
+            inst_id, uni_name, "University", region, city, region_id_map,
+            founded
+        ))
         used_names.add(uni_name)
         inst_id += 1
 
     # add colleges
     for col_name, region, city in COLLEGES:
-        clean = col_name.lower().replace(" ", "").replace(",", "").replace("'", "")
-        institutions.append({
-            "institution_id": inst_id,
-            "name": col_name,
-            "category": "College",
-            "region_id": region_id_map[region],
-            "region_name": region,
-            "city": city,
-            "postcode": make_postcode(city),
-            "founded_year": random.randint(1900, 2015),
-            "website": "https://www." + clean[:25] + ".ac.uk",
-        })
+        institutions.append(make_institution_dict(
+            inst_id, col_name, "College", region, city, region_id_map,
+            random.randint(1900, 2015)
+        ))
         used_names.add(col_name)
         inst_id += 1
 
-    # weights for spreading schools across regions (roughly by population)
+    # umama wants every city to have at least 1 of each category
+    # so first pass: make sure each city has at least 1 primary and 1 secondary
+    # (universities and colleges - we already filled most cities above)
+    all_cities = []
+    for region, cities in CITY_BY_REGION.items():
+        for city in cities:
+            all_cities.append((region, city))
+
+    # add at least 1 primary and 1 secondary per city
+    for region, city in all_cities:
+        # 1 primary
+        name = make_school_name("Primary", used_names)
+        institutions.append(make_institution_dict(
+            inst_id, name, "Primary School", region, city, region_id_map,
+            random.randint(1880, 2020)
+        ))
+        inst_id += 1
+        # 1 secondary
+        name = make_school_name("Secondary", used_names)
+        institutions.append(make_institution_dict(
+            inst_id, name, "Secondary School", region, city, region_id_map,
+            random.randint(1850, 2015)
+        ))
+        inst_id += 1
+
+    # also make sure every city has at least one university and one college
+    # check which cities are missing
+    cities_with_uni = set()
+    cities_with_college = set()
+    for inst in institutions:
+        if inst["category"] == "University":
+            cities_with_uni.add(inst["city"])
+        if inst["category"] == "College":
+            cities_with_college.add(inst["city"])
+
+    # add a generic university/college for any city missing one
+    for region, city in all_cities:
+        if city not in cities_with_uni:
+            uni_name = city + " University"
+            if uni_name in used_names:
+                uni_name = "University of " + city
+            used_names.add(uni_name)
+            institutions.append(make_institution_dict(
+                inst_id, uni_name, "University", region, city, region_id_map,
+                random.randint(1900, 2010)
+            ))
+            inst_id += 1
+        if city not in cities_with_college:
+            col_name = city + " Community College"
+            if col_name in used_names:
+                col_name = city + " College of FE"
+            used_names.add(col_name)
+            institutions.append(make_institution_dict(
+                inst_id, col_name, "College", region, city, region_id_map,
+                random.randint(1950, 2015)
+            ))
+            inst_id += 1
+
+    # weights for spreading the rest of schools across regions (roughly by population)
     region_weights = {
         "Greater London": 18, "South East England": 15, "North West England": 12,
         "West Midlands": 9, "East of England": 9, "Yorkshire and the Humber": 9,
@@ -386,40 +508,28 @@ def main():
         "Wales": 5, "North East England": 4, "Northern Ireland": 3,
     }
 
-    # add primary schools
-    for i in range(700):
+    # add more primary schools to reach a good total
+    PRIMARY_EXTRA = 1200
+    for i in range(PRIMARY_EXTRA):
         region = random.choices(list(region_weights.keys()), weights=list(region_weights.values()), k=1)[0]
         city = random.choice(CITY_BY_REGION[region])
         name = make_school_name("Primary", used_names)
-        institutions.append({
-            "institution_id": inst_id,
-            "name": name,
-            "category": "Primary School",
-            "region_id": region_id_map[region],
-            "region_name": region,
-            "city": city,
-            "postcode": make_postcode(city),
-            "founded_year": random.randint(1880, 2020),
-            "website": "",
-        })
+        institutions.append(make_institution_dict(
+            inst_id, name, "Primary School", region, city, region_id_map,
+            random.randint(1880, 2020)
+        ))
         inst_id += 1
 
-    # add secondary schools
-    for i in range(250):
+    # add more secondary schools
+    SECONDARY_EXTRA = 530
+    for i in range(SECONDARY_EXTRA):
         region = random.choices(list(region_weights.keys()), weights=list(region_weights.values()), k=1)[0]
         city = random.choice(CITY_BY_REGION[region])
         name = make_school_name("Secondary", used_names)
-        institutions.append({
-            "institution_id": inst_id,
-            "name": name,
-            "category": "Secondary School",
-            "region_id": region_id_map[region],
-            "region_name": region,
-            "city": city,
-            "postcode": make_postcode(city),
-            "founded_year": random.randint(1850, 2015),
-            "website": "",
-        })
+        institutions.append(make_institution_dict(
+            inst_id, name, "Secondary School", region, city, region_id_map,
+            random.randint(1850, 2015)
+        ))
         inst_id += 1
 
     # build performance records (3 years per institution)
@@ -432,7 +542,6 @@ def main():
             score = get_score(rating)
 
             if cat == "University":
-                # universities use gold/silver/bronze
                 if score >= 85:
                     rating_label = "Gold"
                 elif score >= 65:
@@ -447,7 +556,7 @@ def main():
                     "overall_score": score,
                     "student_satisfaction_pct": round(random.uniform(70, 95), 1),
                     "graduate_outcome_pct": round(random.uniform(60, 95), 1),
-                    "attendance_rate_pct": None,
+                    "attendance_rate_pct": "",
                 })
             elif cat == "College":
                 perf_rows.append({
@@ -461,27 +570,26 @@ def main():
                     "attendance_rate_pct": round(random.uniform(80, 98), 1),
                 })
             else:
-                # primary and secondary schools
                 perf_rows.append({
                     "record_id": perf_id,
                     "institution_id": inst["institution_id"],
                     "year": year,
                     "rating": rating,
                     "overall_score": score,
-                    "student_satisfaction_pct": None,
-                    "graduate_outcome_pct": None,
+                    "student_satisfaction_pct": "",
+                    "graduate_outcome_pct": "",
                     "attendance_rate_pct": round(random.uniform(85, 99), 1),
                 })
             perf_id += 1
 
     # write csv files
     with open(os.path.join(out_dir, "regions.csv"), "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=["region_id", "name", "country"])
+        w = csv.DictWriter(f, fieldnames=["region_id", "name", "country", "main_city"])
         w.writeheader()
         w.writerows(regions_rows)
 
     with open(os.path.join(out_dir, "institutions.csv"), "w", newline="", encoding="utf-8") as f:
-        cols = ["institution_id", "name", "category", "region_id", "region_name", "city", "postcode", "founded_year", "website"]
+        cols = ["institution_id", "name", "category", "region_id", "region_name", "city", "postcode", "founded_year"]
         w = csv.DictWriter(f, fieldnames=cols)
         w.writeheader()
         w.writerows(institutions)
@@ -504,6 +612,25 @@ def main():
         by_cat[c] = by_cat.get(c, 0) + 1
     for c in by_cat:
         print(" ", c, ":", by_cat[c])
+
+    # check every city has all 4 types
+    print("\nchecking each city has all 4 categories...")
+    city_cats = {}
+    for inst in institutions:
+        c = inst["city"]
+        if c not in city_cats:
+            city_cats[c] = set()
+        city_cats[c].add(inst["category"])
+
+    needed = {"University", "College", "Primary School", "Secondary School"}
+    missing_count = 0
+    for city, cats in city_cats.items():
+        miss = needed - cats
+        if miss:
+            print(" ", city, "missing:", miss)
+            missing_count += 1
+    if missing_count == 0:
+        print("  all cities have all 4 categories!")
 
 
 main()

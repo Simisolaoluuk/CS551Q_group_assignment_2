@@ -1,4 +1,4 @@
-/* Base page setup */
+/* Page base styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -7,30 +7,39 @@ body {
     color: #333;
 }
 
-/* Main content wrapper */
+/* Main page wrapper */
 .container {
-    padding: 20px;
     max-width: 1200px;
     margin: 20px auto;
+    padding: 20px;
     background: white;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Typography */
-h1, h2, h3 {
+/* Headings */
+h1,
+h2,
+h3 {
     color: #2c3e50;
 }
 
-/* Header and navigation */
+/* Header */
 header {
     background-color: #2c3e50;
     color: white;
     padding: 1rem 2rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-nav {
+/* Navigation layout */
+nav,
+.site-nav,
+.nav-links,
+.auth-links,
+.filter-form,
+.pagination,
+.quick-actions {
     display: flex;
     align-items: center;
 }
@@ -41,67 +50,93 @@ nav {
 }
 
 .site-logo {
-    font-size: 1.2rem;
     flex: 1;
+    font-size: 1.2rem;
 }
 
 .nav-links {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    display: flex;
-    align-items: center;
     justify-content: center;
     gap: 24px;
 }
 
 .auth-links {
     flex: 1;
-    display: flex;
     justify-content: flex-end;
-    align-items: center;
     gap: 12px;
 }
 
-.auth-links form {
+.inline-form {
+    display: inline;
     margin: 0;
 }
 
+/* Navigation links */
 nav a {
     color: #ecf0f1;
     text-decoration: none;
     font-weight: 500;
-    transition: background-color 0.3s, color 0.3s;
+    transition: color 0.3s ease;
 }
 
 .nav-links a:hover {
     color: #3498db;
 }
 
-/* Navigation button styles */
+/* Shared button style */
+.auth-button,
+.nav-button,
+.default-btn,
+.compare-btn,
+.back-link,
+.table-link,
+.table-button {
+    display: inline-block;
+    border: none;
+    border-radius: 6px;
+    background-color: #3498db;
+    color: white !important;
+    text-decoration: none;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
 .auth-button,
 .nav-button {
-    display: inline-block;
     border: 1px solid rgba(236, 240, 241, 0.75);
-    border-radius: 4px;
     padding: 8px 14px;
-    color: #ecf0f1 !important;
-    text-decoration: none;
-    font-weight: 500;
     background-color: transparent;
-    transition: background-color 0.3s, border-color 0.3s;
+    color: #ecf0f1 !important;
+}
+
+.default-btn,
+.compare-btn,
+.back-link {
+    margin-top: 18px;
+    margin-bottom: 10px;
+    padding: 11px 22px;
+    font-size: 1rem;
+}
+
+.table-link,
+.table-button {
+    padding: 6px 14px;
+    font-size: 0.95rem;
 }
 
 .auth-button:hover,
-.nav-button:hover {
-    background-color: #3498db;
-    border-color: #3498db;
-    color: white !important;
-}
-
-.auth-links button.auth-button {
-    font-family: inherit;
-    line-height: normal;
+.nav-button:hover,
+.default-btn:hover,
+.compare-btn:hover,
+.back-link:hover,
+.table-link:hover,
+.table-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
 }
 
 .register-button {
@@ -109,12 +144,7 @@ nav a {
     border-color: #3498db;
 }
 
-.register-button:hover {
-    background-color: #2980b9;
-    border-color: #2980b9;
-}
-
-/* Form controls */
+/* Forms */
 input[type="text"],
 input[type="password"],
 input[type="email"],
@@ -127,31 +157,31 @@ select {
     font-size: 1rem;
 }
 
-/* Default button style */
-button {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
+.filter-form {
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
-button:hover {
-    background-color: #2980b9;
+.filter-form input,
+.filter-form select {
+    margin-right: 0;
+}
+
+.search-form {
+    margin-bottom: 24px;
 }
 
 /* Tables */
 table {
     width: 100%;
-    border-collapse: collapse;
     margin-top: 20px;
+    border-collapse: collapse;
     background: white;
 }
 
-th, td {
+th,
+td {
     border: 1px solid #e0e0e0;
     padding: 12px;
     text-align: left;
@@ -159,8 +189,8 @@ th, td {
 
 th {
     background-color: #f1f5f9;
-    font-weight: 600;
     color: #2c3e50;
+    font-weight: 600;
 }
 
 tr:nth-child(even) {
@@ -171,52 +201,47 @@ tr:hover {
     background-color: #f1f5f9;
 }
 
-/* Highlight comparison winner */
 .winner {
     background-color: #d4edda !important;
     color: #155724;
     font-weight: bold;
 }
 
-/* Homepage quick action buttons */
-.quick-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+/* Comparison result */
+.comparison-summary {
+    margin-top: 20px;
 }
 
-.quick-actions button {
-    margin-right: 0;
+.best-overall-name {
+    color: #15803d;
 }
 
-/* Chart display area */
+/* Chart area */
 .chart-container {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    min-height: 300px;
-    height: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #fafafa;
+    height: 300px;
+    min-height: 300px;
     margin-top: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fafafa;
 }
 
-/* Pagination controls */
+/* Pagination */
 .pagination {
-    margin-top: 20px;
-    display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    align-items: center;
+    margin-top: 20px;
 }
 
 .pagination a {
-    text-decoration: none;
-    color: #3498db;
     padding: 5px 10px;
     border: 1px solid #3498db;
     border-radius: 4px;
+    color: #3498db;
+    text-decoration: none;
 }
 
 .pagination a:hover {
@@ -226,14 +251,24 @@ tr:hover {
 
 /* Footer */
 footer {
-    text-align: center;
+    margin-top: 40px;
     padding: 20px;
     background-color: #2c3e50;
     color: #ecf0f1;
-    margin-top: 40px;
+    text-align: center;
 }
 
-/* Login and register cards */
+.footer-link {
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.footer-link:hover {
+    text-decoration: underline;
+}
+
+/* Authentication pages */
 .auth-card {
     max-width: 520px;
     margin: 10px auto;
@@ -263,22 +298,16 @@ footer {
 }
 
 .auth-form label {
-    font-weight: 600;
     color: #2c3e50;
+    font-weight: 600;
 }
 
 .auth-form input {
-    box-sizing: border-box;
     width: 100%;
     margin: 0 0 8px;
     padding: 10px 12px;
     border: 1px solid #cbd5e1;
     border-radius: 6px;
-    font-size: 1rem;
-}
-
-.auth-form button {
-    margin-top: 8px;
 }
 
 .help-text {
@@ -301,114 +330,57 @@ footer {
     font-weight: 600;
 }
 
-/* Login notice */
-.login-favourite-notice {
-    margin-top: 20px;
-    padding: 14px 18px;
-    background-color: #f1f7fd;
-    border-left: 4px solid #3498db;
-    border-radius: 6px;
+/* Notice messages */
+.notice-box {
+    margin: 18px 0;
+    padding: 16px 18px;
+    border-left: 5px solid #3498db;
+    border-radius: 8px;
+    background-color: #eef4fb;
     color: #2c3e50;
-    font-size: 0.98rem;
+    font-size: 1rem;
+    line-height: 1.6;
 }
 
-.login-favourite-notice a {
-    color: #2980b9;
-    font-weight: 700;
+.notice-box a {
+    color: #2f6fb3;
+    font-weight: 600;
     text-decoration: none;
 }
 
-.login-favourite-notice a:hover {
+.notice-box a:hover {
     text-decoration: underline;
 }
 
-/* Comparison controls */
-.compare-form {
-    margin-bottom: 24px;
+.warning-box {
+    background-color: #fff4e5;
+    border-left-color: #f39c12;
 }
 
-.compare-actions {
-    display: flex;
-    justify-content: flex-start;
-    margin-top: 18px;
-    margin-bottom: 10px;
-    padding-bottom: 6px;
+.success-box {
+    background-color: #ecfdf3;
+    border-left-color: #22c55e;
 }
 
-/* Reusable page action buttons */
-.back-link {
-    display: inline-block;
-    margin-top: 22px;
-    padding: 10px 18px;
-    background-color: #3498db;
-    color: white !important;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: background-color 0.25s ease, transform 0.15s ease;
+.error-box {
+    background-color: #fef2f2;
+    border-left-color: #ef4444;
 }
 
-.back-link:hover {
-    background-color: #2980b9;
-    transform: translateY(-1px);
-}
-
-.compare-btn {
-    display: inline-block;
-    margin-top: 18px;
-    margin-bottom: 10px;
-    padding: 11px 22px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.25s ease, transform 0.15s ease;
-}
-
-.compare-btn:hover {
-    background-color: #2980b9;
-    transform: translateY(-1px);
-}
-
-form[action*="compare"] button {
-    margin-top: 16px;
-}
-
-/* Table action links */
-.table-link {
-    display: inline-block;
-    padding: 6px 14px;
-    background-color: #3498db;
-    color: white !important;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    transition: background-color 0.25s ease, transform 0.15s ease;
-}
-
-.table-link:hover {
-    background-color: #2980b9;
-    transform: translateY(-1px);
-}
-
-/* UK performance summary panel */
+/* UK performance summary */
 .uk-performance-panel {
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
     margin: 28px -20px 30px;
     padding: 16px 20px 24px;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
     background-color: #fafafa;
 }
 
 .uk-performance-panel h2 {
     margin: 0 0 26px;
-    text-align: center;
     color: #666;
     font-size: 1.1rem;
+    text-align: center;
 }
 
 .uk-performance-grid {
@@ -419,11 +391,11 @@ form[action*="compare"] button {
 
 .performance-summary-table {
     margin: 0;
-    border-collapse: separate;
-    border-spacing: 0;
     overflow: hidden;
     border: 1px solid #d8dee6;
     border-radius: 10px;
+    border-spacing: 0;
+    border-collapse: separate;
     background-color: #ffffff;
     box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
 }
@@ -431,12 +403,6 @@ form[action*="compare"] button {
 .performance-summary-table th,
 .performance-summary-table td {
     text-align: center;
-}
-
-.performance-summary-table th {
-    background-color: #f1f5f9;
-    color: #2c3e50;
-    font-size: 1rem;
 }
 
 .performance-summary-table td {
@@ -453,7 +419,7 @@ form[action*="compare"] button {
     }
 }
 
-/* Tablet and small desktop navigation */
+/* Tablet navigation */
 @media (max-width: 760px) {
     header {
         padding: 1rem;
@@ -472,17 +438,16 @@ form[action*="compare"] button {
     .nav-links {
         position: static;
         order: 3;
-        transform: none;
         flex: 1 0 100%;
         flex-wrap: wrap;
         justify-content: flex-start;
         gap: 14px;
+        transform: none;
     }
 
     .auth-links {
         margin-left: auto;
         flex-wrap: wrap;
-        justify-content: flex-end;
     }
 }
 
@@ -512,20 +477,8 @@ form[action*="compare"] button {
         text-align: center;
     }
 
-    .auth-links {
-        width: 100%;
-    }
-
+    .auth-links,
     .auth-links form {
-        width: 100%;
-    }
-
-    .auth-links button.auth-button {
-        width: 100%;
-    }
-
-    .compare-actions button,
-    .auth-form button {
         width: 100%;
     }
 
@@ -539,7 +492,7 @@ form[action*="compare"] button {
     }
 }
 
-/* Small mobile screens */
+/* Small mobile layout */
 @media (max-width: 520px) {
     .uk-performance-panel {
         margin-right: -16px;

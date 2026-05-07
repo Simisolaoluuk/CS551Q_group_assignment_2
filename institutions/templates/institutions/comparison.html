@@ -1,21 +1,31 @@
 {% extends 'institutions/base.html' %}
 
 {% block content %}
-    <h1>Comparing {{ comparison_type|default:"Institutions"|title }}</h1>
 
+    <!-- Page heading with selected comparison type -->
+    <h1>
+        Comparing {{ comparison_type|default:"Institutions"|title }}
+    </h1>
+
+    <!-- Comparison table -->
     <table>
+
+        <!-- Institution names used as table columns -->
         <thead>
             <tr>
                 <th>Metric</th>
+
                 {% for institution in institutions %}
                     <th>{{ institution.name }}</th>
                 {% endfor %}
             </tr>
         </thead>
 
+        <!-- Metric values for each selected institution -->
         <tbody>
             <tr>
                 <td><strong>Score</strong></td>
+
                 {% for institution in institutions %}
                     <td class="{% if institution.latest_score == best_score %}winner{% endif %}">
                         {{ institution.latest_score|default:"N/A" }}
@@ -25,6 +35,7 @@
 
             <tr>
                 <td><strong>Attendance</strong></td>
+
                 {% for institution in institutions %}
                     <td class="{% if institution.latest_attendance == best_attendance %}winner{% endif %}">
                         {{ institution.latest_attendance|default:"N/A" }}%
@@ -34,11 +45,17 @@
         </tbody>
     </table>
 
-    <h2 style="margin-top: 20px;">
+    <!-- Best overall institution summary -->
+    <h2 class="comparison-summary">
         Best Overall:
-        <span style="color: green;">{{ best_overall.name }}</span>
+        <span class="best-overall-name">
+            {{ best_overall.name }}
+        </span>
     </h2>
 
-    <br>
-    <a href="{% url 'institution_list' %}" class="back-link">&larr; Back to list</a>
+    <!-- Link back to the institution list -->
+    <a href="{% url 'institution_list' %}" class="back-link">
+        &larr; Back to list
+    </a>
+
 {% endblock %}

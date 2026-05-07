@@ -1,36 +1,84 @@
 {% extends 'institutions/base.html' %}
 
 {% block content %}
+
+    <!-- Page heading -->
     <h1>My Favourite Institutions</h1>
 
+    <!-- Favourite institutions table -->
     {% if favourites %}
+
         <table>
+
+            <!-- Table headings -->
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Category</th>
                     <th>Region</th>
-                    <th>View</th>
-                    <th>Remove</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
+
+            <!-- Favourite institution rows -->
             <tbody>
+
                 {% for favourite in favourites %}
                     <tr>
-                        <td>{{ favourite.institution.name }}</td>
-                        <td>{{ favourite.institution.get_category_display }}</td>
-                        <td>{{ favourite.institution.region.name }}</td>
+
+                        <!-- Institution name -->
                         <td>
-                            <a href="{% url 'institution_detail' favourite.institution.id %}" class="table-link">View</a>
+                            {{ favourite.institution.name }}
                         </td>
+
+                        <!-- Institution category -->
                         <td>
-                            <a href="{% url 'remove_favourite' favourite.institution.id %}" class="table-link">Remove</a>
+                            {{ favourite.institution.get_category_display }}
+                        </td>
+
+                        <!-- Institution region -->
+                        <td>
+                            {{ favourite.institution.region.name }}
+                        </td>
+
+                        <!-- Institution actions -->
+                        <td>
+
+                            <!-- Institution details link -->
+                            <a
+                                href="{% url 'institution_detail' favourite.institution.id %}"
+                                class="table-link"
+                            >
+                                View
+                            </a>
+
+                            <!-- Remove favourite form -->
+                            <form
+                                action="{% url 'remove_favourite' favourite.institution.id %}"
+                                method="POST"
+                                class="inline-form"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="table-button"
+                                >
+                                    Remove
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 {% endfor %}
+
             </tbody>
         </table>
+
+    <!-- Empty state -->
     {% else %}
-        <p>You have not added any favourite institutions yet.</p>
+        <p>
+            You have not added any favourite institutions yet.
+        </p>
     {% endif %}
+
 {% endblock %}
