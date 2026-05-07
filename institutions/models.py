@@ -1,9 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Region(models.Model):
     name = models.CharField(max_length=100)
     country = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
@@ -26,6 +30,9 @@ class Institution(models.Model):
     founded_year = models.IntegerField(null=True, blank=True)
     website = models.URLField(blank=True)
 
+    class Meta:
+        ordering = ["name"]
+
     def __str__(self):
         return self.name
 
@@ -40,5 +47,21 @@ class PerformanceRecord(models.Model):
     graduate_outcome_pct = models.FloatField(null=True, blank=True)
     attendance_rate_pct = models.FloatField(null=True, blank=True)
 
+    class Meta:
+        ordering = ["-year"]
+
     def __str__(self):
         return f"{self.institution.name} - {self.year}"
+
+
+class FavouriteInstitution(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "institution")
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.user.username} - {self.institution.name}"

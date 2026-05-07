@@ -447,7 +447,7 @@ def main():
                     "overall_score": score,
                     "student_satisfaction_pct": round(random.uniform(70, 95), 1),
                     "graduate_outcome_pct": round(random.uniform(60, 95), 1),
-                    "attendance_rate_pct": "",
+                    "attendance_rate_pct": None,
                 })
             elif cat == "College":
                 perf_rows.append({
@@ -468,8 +468,8 @@ def main():
                     "year": year,
                     "rating": rating,
                     "overall_score": score,
-                    "student_satisfaction_pct": "",
-                    "graduate_outcome_pct": "",
+                    "student_satisfaction_pct": None,
+                    "graduate_outcome_pct": None,
                     "attendance_rate_pct": round(random.uniform(85, 99), 1),
                 })
             perf_id += 1

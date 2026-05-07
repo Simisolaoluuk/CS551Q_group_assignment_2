@@ -1,4 +1,4 @@
-/* Base Styles */
+/* Base page setup */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -7,6 +7,7 @@ body {
     color: #333;
 }
 
+/* Main content wrapper */
 .container {
     padding: 20px;
     max-width: 1200px;
@@ -21,7 +22,7 @@ h1, h2, h3 {
     color: #2c3e50;
 }
 
-/* Header & Navigation */
+/* Header and navigation */
 header {
     background-color: #2c3e50;
     color: white;
@@ -32,27 +33,93 @@ header {
 nav {
     display: flex;
     align-items: center;
-    gap: 20px;
 }
 
-nav strong {
+.site-nav {
+    position: relative;
+    min-height: 40px;
+}
+
+.site-logo {
     font-size: 1.2rem;
-    margin-right: 20px;
+    flex: 1;
+}
+
+.nav-links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+}
+
+.auth-links {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+}
+
+.auth-links form {
+    margin: 0;
 }
 
 nav a {
     color: #ecf0f1;
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-nav a:hover {
+.nav-links a:hover {
     color: #3498db;
 }
 
-/* Forms & Inputs */
-input[type="text"], select {
+/* Navigation button styles */
+.auth-button,
+.nav-button {
+    display: inline-block;
+    border: 1px solid rgba(236, 240, 241, 0.75);
+    border-radius: 4px;
+    padding: 8px 14px;
+    color: #ecf0f1 !important;
+    text-decoration: none;
+    font-weight: 500;
+    background-color: transparent;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.auth-button:hover,
+.nav-button:hover {
+    background-color: #3498db;
+    border-color: #3498db;
+    color: white !important;
+}
+
+.auth-links button.auth-button {
+    font-family: inherit;
+    line-height: normal;
+}
+
+.register-button {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.register-button:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+/* Form controls */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+select {
+    box-sizing: border-box;
     padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -60,6 +127,7 @@ input[type="text"], select {
     font-size: 1rem;
 }
 
+/* Default button style */
 button {
     background-color: #3498db;
     color: white;
@@ -103,20 +171,29 @@ tr:hover {
     background-color: #f1f5f9;
 }
 
-/* Specific UI Elements */
+/* Highlight comparison winner */
 .winner {
     background-color: #d4edda !important;
     color: #155724;
     font-weight: bold;
 }
 
-.quick-actions button {
-    margin-right: 10px;
+/* Homepage quick action buttons */
+.quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
+.quick-actions button {
+    margin-right: 0;
+}
+
+/* Chart display area */
 .chart-container {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
+    min-height: 300px;
     height: 300px;
     display: flex;
     align-items: center;
@@ -125,10 +202,11 @@ tr:hover {
     margin-top: 20px;
 }
 
-/* Pagination */
+/* Pagination controls */
 .pagination {
     margin-top: 20px;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     align-items: center;
 }
@@ -153,4 +231,322 @@ footer {
     background-color: #2c3e50;
     color: #ecf0f1;
     margin-top: 40px;
+}
+
+/* Login and register cards */
+.auth-card {
+    max-width: 520px;
+    margin: 10px auto;
+    padding: 32px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.auth-card__intro {
+    margin-bottom: 24px;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    color: #3498db;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.auth-form label {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.auth-form input {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0 0 8px;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.auth-form button {
+    margin-top: 8px;
+}
+
+.help-text {
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.error {
+    margin: 0 0 8px;
+    color: #b91c1c;
+}
+
+.auth-switch {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.auth-switch a {
+    color: #2980b9;
+    font-weight: 600;
+}
+
+/* Login notice */
+.login-favourite-notice {
+    margin-top: 20px;
+    padding: 14px 18px;
+    background-color: #f1f7fd;
+    border-left: 4px solid #3498db;
+    border-radius: 6px;
+    color: #2c3e50;
+    font-size: 0.98rem;
+}
+
+.login-favourite-notice a {
+    color: #2980b9;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.login-favourite-notice a:hover {
+    text-decoration: underline;
+}
+
+/* Comparison controls */
+.compare-form {
+    margin-bottom: 24px;
+}
+
+.compare-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 18px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+}
+
+/* Reusable page action buttons */
+.back-link {
+    display: inline-block;
+    margin-top: 22px;
+    padding: 10px 18px;
+    background-color: #3498db;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
+.back-link:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+}
+
+.compare-btn {
+    display: inline-block;
+    margin-top: 18px;
+    margin-bottom: 10px;
+    padding: 11px 22px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
+.compare-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+}
+
+form[action*="compare"] button {
+    margin-top: 16px;
+}
+
+/* Table action links */
+.table-link {
+    display: inline-block;
+    padding: 6px 14px;
+    background-color: #3498db;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
+.table-link:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+}
+
+/* UK performance summary panel */
+.uk-performance-panel {
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    margin: 28px -20px 30px;
+    padding: 16px 20px 24px;
+    background-color: #fafafa;
+}
+
+.uk-performance-panel h2 {
+    margin: 0 0 26px;
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.uk-performance-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(150px, 1fr));
+    gap: 18px;
+}
+
+.performance-summary-table {
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border: 1px solid #d8dee6;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+}
+
+.performance-summary-table th,
+.performance-summary-table td {
+    text-align: center;
+}
+
+.performance-summary-table th {
+    background-color: #f1f5f9;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.performance-summary-table td {
+    height: 74px;
+    color: #666;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* Medium screens */
+@media (max-width: 900px) {
+    .uk-performance-grid {
+        grid-template-columns: repeat(2, minmax(150px, 1fr));
+    }
+}
+
+/* Tablet and small desktop navigation */
+@media (max-width: 760px) {
+    header {
+        padding: 1rem;
+    }
+
+    .site-nav {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .site-logo,
+    .auth-links {
+        flex: 0 0 auto;
+    }
+
+    .nav-links {
+        position: static;
+        order: 3;
+        transform: none;
+        flex: 1 0 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 14px;
+    }
+
+    .auth-links {
+        margin-left: auto;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+}
+
+/* Mobile layout */
+@media (max-width: 640px) {
+    .container {
+        margin: 12px;
+        padding: 16px;
+        overflow-x: auto;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    select {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    button,
+    .compare-btn,
+    .back-link,
+    .auth-button,
+    .nav-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .auth-links {
+        width: 100%;
+    }
+
+    .auth-links form {
+        width: 100%;
+    }
+
+    .auth-links button.auth-button {
+        width: 100%;
+    }
+
+    .compare-actions button,
+    .auth-form button {
+        width: 100%;
+    }
+
+    table {
+        min-width: 720px;
+    }
+
+    .chart-container {
+        height: 260px;
+        min-height: 260px;
+    }
+}
+
+/* Small mobile screens */
+@media (max-width: 520px) {
+    .uk-performance-panel {
+        margin-right: -16px;
+        margin-left: -16px;
+    }
+
+    .uk-performance-grid {
+        grid-template-columns: 1fr;
+    }
 }

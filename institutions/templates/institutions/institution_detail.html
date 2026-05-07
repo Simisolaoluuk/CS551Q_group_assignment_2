@@ -2,13 +2,46 @@
 
 {% block content %}
     <h1>{{ institution.name }}</h1>
+
     <p><strong>Region:</strong> {{ institution.region.name }}</p>
-    <p><strong>Category:</strong> {{ institution.get_category_display }}</p>
-    <p><strong>City:</strong> {{ institution.city }}</p>
-    <p><strong>Postcode:</strong> {{ institution.postcode }}</p>
+    <p><strong>Category:</strong> {{ institution.category }}</p>
+    {% if institution.city %}
+        <p><strong>City:</strong> {{ institution.city }}</p>
+    {% endif %}
+
+    {% if institution.postcode %}
+        <p><strong>Postcode:</strong> {{ institution.postcode }}</p>
+    {% endif %}
+
+    {% if institution.founded_year %}
+        <p><strong>Founded:</strong> {{ institution.founded_year }}</p>
+    {% endif %}
 
     {% if institution.website %}
-        <p><strong>Website:</strong> <a href="{{ institution.website }}" target="_blank">{{ institution.website }}</a></p>
+        <p>
+            <strong>Website:</strong>
+            <a href="{{ institution.website }}" target="_blank">
+                Visit Website
+            </a>
+        </p>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        {% if is_favourite %}
+            <a href="{% url 'remove_favourite' institution.id %}">
+                <button>Remove from Favourites</button>
+            </a>
+        {% else %}
+            <a href="{% url 'add_favourite' institution.id %}">
+                <button>Add to Favourites</button>
+            </a>
+        {% endif %}
+    {% endif %}
+
+    {% if not user.is_authenticated %}
+        <p class="login-favourite-notice">
+            <a href="{% url 'login' %}">Login</a> to save this institution as a favourite.
+        </p>
     {% endif %}
 
     <hr>
@@ -83,5 +116,5 @@
     </script>
 
     <br>
-    <a href="{% url 'institution_list' %}">&larr; Back to list</a>
+    <a href="{% url 'institution_list' %}" class="back-link">&larr; Back to list</a>
 {% endblock %}

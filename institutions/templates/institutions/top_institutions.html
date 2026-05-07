@@ -58,7 +58,7 @@
                         <td>{{ institution.latest_score|default:"N/A" }}</td>
                         <td>{{ institution.latest_attendance|default:"N/A" }}%</td>
                         <td><input type="checkbox" name="institution_ids" value="{{ institution.id }}"></td>
-                        <td><a href="{% url 'institution_detail' institution.id %}">View</a></td>
+                        <td><a href="{% url 'institution_detail' institution.id %}" class="table-link">View</a></td>
                     </tr>
                 {% empty %}
                     <tr>
@@ -68,6 +68,6 @@
             </tbody>
         </table>
 
-        <button type="submit">Compare Selected</button>
+        <button type="submit" class="compare-btn">Compare Selected</button>
     </form>
 {% endblock %}
