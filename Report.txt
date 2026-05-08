@@ -35,5 +35,4 @@ https://umama2026.pythonanywhere.com/
 Through these challenges, the team learned the importance of early planning, regular communication, and iterative testing. The team's structured approach to issue tracking ensured efficient task management, while the division of responsibilities allowed each member to develop specialized skills. The group's adaptability, particularly with version control, strengthened overall collaboration.
 
 ## Conclusion
-The Educational Dashboard project successfully demonstrated the team's ability to overcome technical and collaborative challenges in developing a full-stack web application. The experience enhanced skills in Django development, data management, and team coordination, preparing us for future software engineering endeavors.</content>
-<parameter name="filePath">/Users/user/Documents/GitHub/CS551Q_group_assignment_2/Report.txt
+The Educational Dashboard project successfully demonstrated the team's ability to overcome technical and collaborative challenges in developing a full-stack web application. The experience enhanced skills in Django development, data management, and team coordination, preparing us for future software engineering endeavors.
