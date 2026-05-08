@@ -3,16 +3,10 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_POST
-from django.db.models import OuterRef, Subquery, FloatField
+from django.db.models import OuterRef, Subquery, FloatField, Avg
 from django.contrib.auth.decorators import login_required
-
 from .forms import LoginForm, RegisterForm
-from .models import (
-    Region,
-    Institution,
-    PerformanceRecord,
-    FavouriteInstitution
-)
+from .models import (Region, Institution, PerformanceRecord, FavouriteInstitution)
 
 
 # Add latest performance data to institution queryset
@@ -39,6 +33,17 @@ def institutions_with_latest_performance(queryset):
 # Homepage view
 def home(request):
 
+    # Count all institutions in the database
+    total_institutions = Institution.objects.count()
+
+    # Count all regions in the database
+    total_regions = Region.objects.count()
+
+    # Get the highest performance record in the dataset
+    top_score = PerformanceRecord.objects.order_by(
+        "-overall_score"
+    ).first()
+
     # Store top institutions grouped by category
     top_institutions_by_category = []
 
@@ -50,14 +55,18 @@ def home(request):
             Institution.objects.filter(category=category_value)
         ).order_by("-latest_score")[:3]
 
-        # Save results
+        # Save results for this category
         top_institutions_by_category.append({
             "category_label": category_label,
             "institutions": top_institutions,
         })
 
+    # Send dashboard summary and top institutions to template
     return render(request, "institutions/home.html", {
-        "top_institutions_by_category": top_institutions_by_category
+        "total_institutions": total_institutions,
+        "total_regions": total_regions,
+        "top_score": top_score,
+        "top_institutions_by_category": top_institutions_by_category,
     })
 
 
@@ -139,6 +148,30 @@ def institution_detail(request, pk):
     # Get latest performance record
     latest_record = records.order_by("-year").first()
 
+    regional_average = None
+
+    if latest_record:
+        regional_average = PerformanceRecord.objects.filter(
+            institution__region=institution.region,
+            year=latest_record.year
+        ).aggregate(
+            avg_score=Avg("overall_score")
+        )["avg_score"]
+
+    performance_label = None
+    score_difference = None
+
+    if latest_record:
+        if latest_record.overall_score >= 80:
+            performance_label = "Strong"
+        elif latest_record.overall_score >= 60:
+            performance_label = "Moderate"
+        else:
+            performance_label = "Needs Improvement"
+
+        if regional_average is not None:
+            score_difference = latest_record.overall_score - regional_average
+
     # Data for charts
     chart_years = [record.year for record in records]
 
@@ -171,6 +204,9 @@ def institution_detail(request, pk):
         "chart_scores": chart_scores,
         "chart_attendance": chart_attendance,
         "is_favourite": is_favourite,
+        "regional_average": regional_average,
+        "performance_label": performance_label,
+        "score_difference": score_difference,
     })
 
 
@@ -245,12 +281,27 @@ def compare_institutions(request):
         )
     )
 
+    lowest_overall = min(
+        institutions,
+        key=lambda institution: (
+            institution.latest_score or 0,
+            institution.latest_attendance or 0
+        )
+    )
+
+    score_gap = (
+        (best_overall.latest_score or 0) -
+        (lowest_overall.latest_score or 0)
+    )
+
     return render(request, "institutions/comparison.html", {
         "institutions": institutions,
         "comparison_type": institutions[0].get_category_display(),
         "best_score": best_score,
         "best_attendance": best_attendance,
         "best_overall": best_overall,
+        "lowest_overall": lowest_overall,
+        "score_gap": score_gap,
     })
 
 

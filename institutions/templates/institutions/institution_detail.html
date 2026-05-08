@@ -88,81 +88,123 @@
         </ul>
     </section>
 
+
+    <!-- Performance analysis summary -->
+    {% if latest_record %}
+        <section class="summary-box">
+            <h2>Performance Summary</h2>
+
+            <p>
+                Performance level:
+                <strong>{{ performance_label }}</strong>
+            </p>
+
+            {% if regional_average %}
+                <p>
+                    Regional average score:
+                    {{ regional_average|floatformat:1 }}
+                </p>
+
+                {% if score_difference > 0 %}
+                    <p>
+                        This institution performs
+                        <strong>{{ score_difference|floatformat:1 }}</strong>
+                        points above the regional average.
+                    </p>
+                {% elif score_difference < 0 %}
+                    <p>
+                        This institution performs
+                        <strong>{{ score_difference|floatformat:1|cut:"-" }}</strong>
+                        points below the regional average.
+                    </p>
+                {% else %}
+                    <p>This institution matches the regional average.</p>
+                {% endif %}
+            {% endif %}
+        </section>
+    {% endif %}
+
+    
     <!-- Performance chart area -->
-    <section>
-        <h2>Performance Trend</h2>
+    {% if chart_years and chart_scores %}
+        <section>
+            <h2>Performance Trend</h2>
 
-        <div class="chart-container">
-            <canvas id="performanceChart"></canvas>
-        </div>
-    </section>
+            <div class="chart-container">
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </section>
 
-    <!-- Chart values passed safely from Django to JavaScript -->
-    {{ chart_years|json_script:"years-data" }}
-    {{ chart_scores|json_script:"scores-data" }}
-    {{ chart_attendance|json_script:"attendance-data" }}
+        <!-- Chart values passed safely from Django to JavaScript -->
+        {{ chart_years|json_script:"years-data" }}
+        {{ chart_scores|json_script:"scores-data" }}
+        {{ chart_attendance|json_script:"attendance-data" }}
 
-    <!-- Chart.js library -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- Chart.js library -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Line chart setup for score and attendance trends -->
-    <script>
-        const years = JSON.parse(
-            document.getElementById('years-data').textContent
-        );
+        <!-- Line chart setup for score and attendance trends -->
+        <script>
+            const years = JSON.parse(
+                document.getElementById('years-data').textContent
+            );
 
-        const scores = JSON.parse(
-            document.getElementById('scores-data').textContent
-        );
+            const scores = JSON.parse(
+                document.getElementById('scores-data').textContent
+            );
 
-        const attendance = JSON.parse(
-            document.getElementById('attendance-data').textContent
-        );
+            const attendance = JSON.parse(
+                document.getElementById('attendance-data').textContent
+            );
 
-        const chartContext = document.getElementById('performanceChart');
+            const chartContext = document.getElementById('performanceChart');
 
-        const chartDatasets = [
-            {
-                label: 'Score',
-                data: scores,
-                borderWidth: 2,
-                tension: 0.3
-            },
-            {
-                label: 'Attendance',
-                data: attendance,
-                borderWidth: 2,
-                tension: 0.3
-            }
-        ];
+            const chartDatasets = [
+                {
+                    label: 'Score',
+                    data: scores,
+                    borderWidth: 2,
+                    tension: 0.3
+                },
+                {
+                    label: 'Attendance',
+                    data: attendance,
+                    borderWidth: 2,
+                    tension: 0.3
+                }
+            ];
 
-        new Chart(chartContext, {
-            type: 'line',
+            new Chart(chartContext, {
+                type: 'line',
 
-            data: {
-                labels: years,
-                datasets: chartDatasets
-            },
-
-            options: {
-                responsive: true,
-
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Performance Over Time'
-                    }
+                data: {
+                    labels: years,
+                    datasets: chartDatasets
                 },
 
-                scales: {
-                    y: {
-                        suggestedMin: 0,
-                        suggestedMax: 100
+                options: {
+                    responsive: true,
+
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Performance Over Time'
+                        }
+                    },
+
+                    scales: {
+                        y: {
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
                     }
                 }
-            }
-        });
-    </script>
+            });
+        </script>
+    {% else %}
+        <p class="notice-box">No chart data available for this institution.</p>
+    {% endif %}
+
 
     <!-- Link back to institution list -->
     <a href="{% url 'institution_list' %}" class="back-link">

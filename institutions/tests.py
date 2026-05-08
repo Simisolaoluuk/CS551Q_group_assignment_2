@@ -1,15 +1,17 @@
-from django.test import TestCase
-
-from django.test import TestCase
-from django.test import TestCase, Client
-from django.urls import reverse
+from io import StringIO
 from django.contrib.auth.models import User
-from .models import Region, Institution, PerformanceRecord, FavouriteInstitution
+from django.core.management import call_command
+from django.test import Client, TestCase
+from django.urls import reverse
+from .models import (FavouriteInstitution, Institution, PerformanceRecord, Region,)
 
 
 class InstitutionDashboardTests(TestCase):
+    """Tests for models, views, authentication, favourites, comparison and filters."""
 
     def setUp(self):
+        """Create reusable test data before each test."""
+
         self.client = Client()
 
         # Create test user
@@ -24,7 +26,7 @@ class InstitutionDashboardTests(TestCase):
             country="Scotland"
         )
 
-        # Create university institution
+        # Create first university
         self.uni1 = Institution.objects.create(
             name="University of Aberdeen",
             category="University",
@@ -34,7 +36,7 @@ class InstitutionDashboardTests(TestCase):
             founded_year=1495
         )
 
-        # Create second university institution
+        # Create second university for comparison tests
         self.uni2 = Institution.objects.create(
             name="Robert Gordon University",
             category="University",
@@ -44,7 +46,7 @@ class InstitutionDashboardTests(TestCase):
             founded_year=1992
         )
 
-        # Create primary school institution
+        # Create primary school for category validation tests
         self.primary_school = Institution.objects.create(
             name="Aberdeen Primary School",
             category="Primary School",
@@ -54,7 +56,7 @@ class InstitutionDashboardTests(TestCase):
             founded_year=1980
         )
 
-        # Create performance records
+        # Create performance record for first university
         PerformanceRecord.objects.create(
             institution=self.uni1,
             year=2024,
@@ -65,6 +67,7 @@ class InstitutionDashboardTests(TestCase):
             attendance_rate_pct=None
         )
 
+        # Create performance record for second university
         PerformanceRecord.objects.create(
             institution=self.uni2,
             year=2024,
@@ -75,6 +78,7 @@ class InstitutionDashboardTests(TestCase):
             attendance_rate_pct=None
         )
 
+        # Create performance record for primary school
         PerformanceRecord.objects.create(
             institution=self.primary_school,
             year=2024,
@@ -85,173 +89,394 @@ class InstitutionDashboardTests(TestCase):
             attendance_rate_pct=95
         )
 
-    # 1. Home page loads
+
+    # Basic page/view tests
+
     def test_home_page_loads(self):
+        """Home page should load successfully."""
         response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Institution Dashboard")
 
-    # 2. Institution list page loads
     def test_institution_list_page_loads(self):
+        """Institution list page should load successfully."""
         response = self.client.get(reverse("institution_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Browse Institutions")
 
-    # 3. Institution detail page displays correct institution
-    def test_institution_detail_page(self):
+    def test_top_institutions_page_loads(self):
+        """Top institutions page should load successfully."""
+        response = self.client.get(reverse("top_institutions"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Top Institutions")
+
+    def test_register_page_loads(self):
+        """Registration page should load successfully."""
+        response = self.client.get(reverse("register"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Register")
+
+    def test_login_page_loads(self):
+        """Login page should load successfully."""
+        response = self.client.get(reverse("login"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Login")
+
+    
+    # Institution detail tests
+    def test_institution_detail_page_displays_correct_institution(self):
+        """Detail page should display selected institution and metrics."""
         response = self.client.get(
             reverse("institution_detail", args=[self.uni1.id])
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "University of Aberdeen")
         self.assertContains(response, "Performance Trend")
         self.assertContains(response, "92")
 
-    # 4. Invalid institution detail returns 404
-    def test_institution_detail_invalid_id(self):
+    def test_invalid_institution_detail_returns_404(self):
+        """Invalid institution ID should return 404."""
         response = self.client.get(
-            reverse("institution_detail", args=[999])
+            reverse("institution_detail", args=[99999])
         )
+
         self.assertEqual(response.status_code, 404)
 
-    # 5. Search by institution name works
-    def test_search_institution_name(self):
+    def test_institution_detail_shows_performance_summary(self):
+        """Detail page should show analytical performance summary."""
         response = self.client.get(
-            reverse("institution_list") + "?category=University&q=Aberdeen"
+            reverse("institution_detail", args=[self.uni1.id])
         )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Performance Summary")
+        self.assertContains(response, "Performance level")
+        self.assertContains(response, "Strong")
+
+    def test_institution_detail_shows_regional_average(self):
+        """Detail page should compare institution score with regional average."""
+        response = self.client.get(
+            reverse("institution_detail", args=[self.uni1.id])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Regional average score")
+        self.assertContains(response, "regional average")
+
+    def test_institution_detail_without_performance_data(self):
+        """Detail page should handle institutions with no performance data."""
+        institution_without_data = Institution.objects.create(
+            name="No Data Institution",
+            category="University",
+            region=self.region,
+            city="Aberdeen"
+        )
+
+        response = self.client.get(
+            reverse("institution_detail", args=[institution_without_data.id])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "No performance data available")
+        self.assertContains(response, "No chart data available")
+
+
+    # Search and filter tests
+    def test_search_institution_name(self):
+        """Search should return matching institution names."""
+        response = self.client.get(
+            reverse("institution_list"),
+            {
+                "category": "University",
+                "q": "Aberdeen"
+            }
+        )
+
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "University of Aberdeen")
         self.assertNotContains(response, "Robert Gordon University")
 
-    # 6. Filter by category works
     def test_filter_by_category(self):
+        """Category filter should show only matching category."""
         response = self.client.get(
-            reverse("institution_list") + "?category=Primary School"
+            reverse("institution_list"),
+            {
+                "category": "Primary School"
+            }
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Aberdeen Primary School")
         self.assertNotContains(response, "University of Aberdeen")
 
-    # 7. Filter by region works
     def test_filter_by_region(self):
+        """Region filter should show institutions from selected region."""
         response = self.client.get(
-            reverse("institution_list") + "?category=University&region=Scotland"
+            reverse("institution_list"),
+            {
+                "category": "University",
+                "region": "Scotland"
+            }
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "University of Aberdeen")
         self.assertContains(response, "Robert Gordon University")
 
-    # 8. Top institutions page loads
-    def test_top_institutions_page_loads(self):
-        response = self.client.get(reverse("top_institutions"))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Top Institutions")
+    def test_empty_search_does_not_crash(self):
+        """Search with no matching results should still return page."""
+        response = self.client.get(
+            reverse("institution_list"),
+            {
+                "category": "University",
+                "q": "NoMatchingInstitutionName"
+            }
+        )
 
-    # 9. Top institutions filter works
+        self.assertEqual(response.status_code, 200)
+
+    def test_invalid_region_filter_does_not_crash(self):
+        """Invalid region filter should not crash the page."""
+        response = self.client.get(
+            reverse("institution_list"),
+            {
+                "category": "University",
+                "region": "InvalidRegion"
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_invalid_sort_option_does_not_crash(self):
+        """Invalid sort option should fall back safely."""
+        response = self.client.get(
+            reverse("institution_list"),
+            {
+                "category": "University",
+                "sort": "invalid-sort"
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+  
+    # Top institution tests
     def test_top_institutions_filter(self):
+        """Top institutions page should support category and region filters."""
         response = self.client.get(
-            reverse("top_institutions") + "?category=University&region=Scotland"
+            reverse("top_institutions"),
+            {
+                "category": "University",
+                "region": "Scotland"
+            }
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "University of Aberdeen")
         self.assertContains(response, "Robert Gordon University")
 
-    # 10. Compare same category institutions works
-    def test_compare_same_category(self):
+    def test_top_institutions_ranking_order(self):
+        """Top institutions should be ordered by highest score first."""
+        response = self.client.get(
+            reverse("top_institutions"),
+            {
+                "category": "University",
+                "region": "Scotland"
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        content = response.content.decode()
+
+        self.assertTrue(
+            content.index("University of Aberdeen")
+            < content.index("Robert Gordon University")
+        )
+
+
+    # Comparison tests
+    def test_compare_same_category_institutions(self):
+        """Comparison should work for institutions in the same category."""
         response = self.client.get(
             reverse("compare_institutions"),
             {
                 "institution_ids": [self.uni1.id, self.uni2.id]
             }
         )
+
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Best Overall")
+        self.assertContains(response, "Highest performing")
         self.assertContains(response, "University of Aberdeen")
 
-    # 11. Compare different categories redirects
     def test_compare_different_categories_redirects(self):
+        """Comparison should reject institutions from different categories."""
         response = self.client.get(
             reverse("compare_institutions"),
             {
                 "institution_ids": [self.uni1.id, self.primary_school.id]
             }
         )
+
         self.assertEqual(response.status_code, 302)
 
-    # 12. Compare with fewer than 2 institutions redirects
     def test_compare_requires_two_institutions(self):
+        """Comparison should require at least two institutions."""
         response = self.client.get(
             reverse("compare_institutions"),
             {
                 "institution_ids": [self.uni1.id]
             }
         )
+
         self.assertEqual(response.status_code, 302)
 
-    # 13. Register page loads
-    def test_register_page_loads(self):
-        response = self.client.get(reverse("register"))
+    def test_compare_rejects_more_than_three_institutions(self):
+        """Comparison should reject more than three selected institutions."""
+        uni3 = Institution.objects.create(
+            name="Third University",
+            category="University",
+            region=self.region,
+            city="Glasgow"
+        )
+
+        uni4 = Institution.objects.create(
+            name="Fourth University",
+            category="University",
+            region=self.region,
+            city="Edinburgh"
+        )
+
+        response = self.client.get(
+            reverse("compare_institutions"),
+            {
+                "institution_ids": [
+                    self.uni1.id,
+                    self.uni2.id,
+                    uni3.id,
+                    uni4.id
+                ]
+            }
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_compare_redirects_when_institution_missing(self):
+        """Comparison should redirect if selected institution does not exist."""
+        response = self.client.get(
+            reverse("compare_institutions"),
+            {
+                "institution_ids": [self.uni1.id, 99999]
+            }
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_compare_shows_best_and_lowest_performers(self):
+        """Comparison page should show highest, lowest and score gap."""
+        response = self.client.get(
+            reverse("compare_institutions"),
+            {
+                "institution_ids": [self.uni1.id, self.uni2.id]
+            }
+        )
+
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Register")
+        self.assertContains(response, "Highest performing")
+        self.assertContains(response, "Lowest performing")
+        self.assertContains(response, "Score gap")
 
-    # 14. User registration works
+
+    # Authentication tests
     def test_user_registration(self):
-        response = self.client.post(reverse("register"), {
-            "username": "newuser",
-            "email": "newuser@example.com",
-            "password1": "ComplexPass123",
-            "password2": "ComplexPass123"
-        })
+        """Valid user registration should create account and redirect home."""
+        response = self.client.post(
+            reverse("register"),
+            {
+                "username": "newuser",
+                "email": "newuser@example.com",
+                "password1": "ComplexPass123",
+                "password2": "ComplexPass123"
+            }
+        )
 
-        self.assertEqual(User.objects.filter(username="newuser").count(), 1)
+        self.assertEqual(
+            User.objects.filter(username="newuser").count(),
+            1
+        )
         self.assertRedirects(response, reverse("home"))
 
-    # 15. Invalid registration password mismatch
     def test_registration_password_mismatch(self):
-        response = self.client.post(reverse("register"), {
-            "username": "user2",
-            "email": "user2@example.com",
-            "password1": "ComplexPass123",
-            "password2": "DifferentPass123"
-        })
+        """Registration should fail when passwords do not match."""
+        response = self.client.post(
+            reverse("register"),
+            {
+                "username": "user2",
+                "email": "user2@example.com",
+                "password1": "ComplexPass123",
+                "password2": "DifferentPass123"
+            }
+        )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(User.objects.filter(username="user2").count(), 0)
+        self.assertEqual(
+            User.objects.filter(username="user2").count(),
+            0
+        )
 
-    # 16. Login page loads
-    def test_login_page_loads(self):
-        response = self.client.get(reverse("login"))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Login")
-
-    # 17. User login works
     def test_user_login(self):
-        login = self.client.login(
+        """Existing user should be able to log in."""
+        logged_in = self.client.login(
             username="testuser",
             password="user1234"
         )
-        self.assertTrue(login)
 
-    # 18. Favourite page redirects without login
+        self.assertTrue(logged_in)
+
+    def test_logout_rejects_get_request(self):
+        """Logout view should reject GET because it requires POST."""
+        self.client.login(username="testuser", password="user1234")
+
+        response = self.client.get(reverse("logout"))
+
+        self.assertEqual(response.status_code, 405)
+
+    def test_logout_works_with_post_request(self):
+        """Logout should work with POST and redirect home."""
+        self.client.login(username="testuser", password="user1234")
+
+        response = self.client.post(reverse("logout"))
+
+        self.assertRedirects(response, reverse("home"))
+
+
+    # Favourite tests
     def test_favourites_redirect_without_login(self):
+        """Favourite list should redirect anonymous users to login."""
         response = self.client.get(reverse("favourite_list"))
+
         self.assertRedirects(
             response,
             f'/login/?next={reverse("favourite_list")}'
         )
 
-    # 19. Add favourite redirects without login
-    def test_add_favourite_redirect_without_login(self):
-        response = self.client.post(
+    def test_add_favourite_get_redirects_safely(self):
+        response = self.client.get(
             reverse("add_favourite", args=[self.uni1.id])
         )
-        self.assertRedirects(
-            response,
-            f'/login/?next={reverse("add_favourite", args=[self.uni1.id])}'
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_remove_favourite_get_redirects_safely(self):
+        response = self.client.get(
+            reverse("remove_favourite", args=[self.uni1.id])
         )
 
-    # 20. Logged in user can add favourite
+        self.assertEqual(response.status_code, 302)
+
     def test_logged_in_user_can_add_favourite(self):
+        """Logged-in user should be able to add favourite using POST."""
         self.client.login(username="testuser", password="user1234")
 
         response = self.client.post(
@@ -267,8 +492,8 @@ class InstitutionDashboardTests(TestCase):
             1
         )
 
-    # 21. Duplicate favourites are prevented
     def test_duplicate_favourites_prevented(self):
+        """Adding the same favourite twice should not create duplicates."""
         self.client.login(username="testuser", password="user1234")
 
         self.client.post(reverse("add_favourite", args=[self.uni1.id]))
@@ -282,8 +507,8 @@ class InstitutionDashboardTests(TestCase):
             1
         )
 
-    # 22. Logged in user can view favourites page
     def test_logged_in_user_can_view_favourites(self):
+        """Logged-in user should see their saved favourites."""
         self.client.login(username="testuser", password="user1234")
 
         FavouriteInstitution.objects.create(
@@ -296,8 +521,8 @@ class InstitutionDashboardTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "University of Aberdeen")
 
-    # 23. Logged in user can remove favourite
     def test_logged_in_user_can_remove_favourite(self):
+        """Logged-in user should be able to remove favourite using POST."""
         self.client.login(username="testuser", password="user1234")
 
         FavouriteInstitution.objects.create(
@@ -318,27 +543,59 @@ class InstitutionDashboardTests(TestCase):
             0
         )
 
-    # 24. Remove favourite redirects without login
-    def test_remove_favourite_redirect_without_login(self):
-        response = self.client.post(
+    def test_add_favourite_rejects_get_request(self):
+        """Add favourite view should reject GET requests."""
+        self.client.login(username="testuser", password="user1234")
+
+        response = self.client.get(
+            reverse("add_favourite", args=[self.uni1.id])
+        )
+
+        self.assertEqual(response.status_code, 405)
+
+    def test_remove_favourite_rejects_get_request(self):
+        """Remove favourite view should reject GET requests."""
+        self.client.login(username="testuser", password="user1234")
+
+        response = self.client.get(
             reverse("remove_favourite", args=[self.uni1.id])
         )
 
-        self.assertRedirects(
-            response,
-            f'/login/?next={reverse("remove_favourite", args=[self.uni1.id])}'
+        self.assertEqual(response.status_code, 405)
+
+    
+    # Model relationship tests
+    def test_model_relationships_connect_region_institution_and_performance(self):
+        """Institution should connect correctly to region and performance data."""
+        self.assertEqual(self.uni1.region.name, "Scotland")
+        self.assertEqual(
+            PerformanceRecord.objects.filter(institution=self.uni1).count(),
+            1
         )
 
-    # 25. Top institutions ranking shows highest scoring institution
-    def test_top_institutions_ranking_order(self):
-        response = self.client.get(
-            reverse("top_institutions") + "?category=University&region=Scotland"
+    def test_favourite_model_relationship(self):
+        """Favourite should correctly link a user and institution."""
+        favourite = FavouriteInstitution.objects.create(
+            user=self.user,
+            institution=self.uni1
         )
 
-        self.assertEqual(response.status_code, 200)
-
-        content = response.content.decode()
-
-        self.assertTrue(
-            content.index("University of Aberdeen") < content.index("Robert Gordon University")
+        self.assertEqual(favourite.user.username, "testuser")
+        self.assertEqual(
+            favourite.institution.name,
+            "University of Aberdeen"
         )
+
+
+    # Management command tests
+    def test_load_data_command_exists(self):
+        """load_data management command should exist and run without crashing."""
+        output = StringIO()
+
+        try:
+            call_command("load_data", stdout=output)
+            command_ran = True
+        except Exception:
+            command_ran = False
+
+        self.assertTrue(command_ran)

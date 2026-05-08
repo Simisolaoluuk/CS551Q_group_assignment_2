@@ -2,8 +2,45 @@
 
 {% block content %}
 
-    <!-- Page heading -->
-    <h1>Welcome to the Institution Dashboard</h1>
+    <!-- Homepage hero section -->
+    <section class="dashboard-hero">
+        <h1>Welcome to the Institution Dashboard</h1>
+
+        <p class="intro-text">
+            Explore educational institutions, compare performance metrics,
+            and analyse trends across different regions and categories.
+        </p>
+    </section>
+
+    <!-- Dashboard statistic cards -->
+    <section class="dashboard-stats">
+
+        <!-- Total institutions -->
+        <div class="stat-card">
+            <h3>Total Institutions</h3>
+            <p>{{ total_institutions }}</p>
+        </div>
+
+        <!-- Total regions -->
+        <div class="stat-card">
+            <h3>Total Regions</h3>
+            <p>{{ total_regions }}</p>
+        </div>
+
+        <!-- Highest score -->
+        <div class="stat-card">
+            <h3>Highest Score</h3>
+
+            <p>
+                {% if top_score %}
+                    {{ top_score.overall_score }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </p>
+        </div>
+
+    </section>
 
     <!-- Institution search form -->
     <form
@@ -44,7 +81,7 @@
                     <th>Region</th>
                     <th>Score</th>
                     <th>Attendance</th>
-                    <th>Trend</th>
+                    <th>Details</th>
                 </tr>
             </thead>
 
