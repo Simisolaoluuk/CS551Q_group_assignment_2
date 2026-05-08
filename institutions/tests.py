@@ -307,7 +307,7 @@ class InstitutionDashboardTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Best Overall")
+        self.assertContains(response, "Highest performing")
         self.assertContains(response, "University of Aberdeen")
 
     def test_compare_different_categories_redirects(self):
