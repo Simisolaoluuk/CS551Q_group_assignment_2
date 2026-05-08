@@ -4,43 +4,46 @@ UK institution data for the project. Includes universities, colleges, secondary 
 
 ## Files
 
-- regions.csv - 12 UK regions
-- institutions.csv - 1106 institutions
-- performance_records.csv - 3318 performance records (3 years per institution, 2022-2024)
+- regions.csv - 12 UK regions with main city
+- institutions.csv - 2062 institutions
+- performance_records.csv - 6186 performance records (3 years per institution, 2022-2024)
 - generate_dataset.py - script that generates the csv files
 - load_data.py - django command to load csv into database
 
 ## Numbers
 
-- Universities: 83
-- Colleges: 73
-- Secondary Schools: 250
-- Primary Schools: 700
-- Total: 1106
+- Universities: 113
+- Colleges: 77
+- Secondary Schools: 601
+- Primary Schools: 1271
+- Total: 2062
+
+Every city in the dataset has at least one university, one college, one primary school and one secondary school.
 
 ## How to use
 
 To regenerate the csv files:
 
-```
 python generate_dataset.py
-```
 
 To load the data into django, copy load_data.py to:
 
-```
 institutions/management/commands/load_data.py
-```
 
 Then run:
 
-```
 python manage.py load_data
-```
+
 
 ## Fields
 
-institutions.csv has these columns:
+regions.csv:
+- region_id
+- name
+- country
+- main_city
+
+institutions.csv:
 - institution_id
 - name
 - category (University / College / Secondary School / Primary School)
@@ -50,8 +53,9 @@ institutions.csv has these columns:
 - postcode
 - founded_year
 - website
+- image_url (free unsplash image, one default image per category)
 
-performance_records.csv has:
+performance_records.csv:
 - record_id
 - institution_id
 - year

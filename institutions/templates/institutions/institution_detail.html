@@ -1,120 +1,214 @@
 {% extends 'institutions/base.html' %}
 
 {% block content %}
+
+    <!-- Institution name -->
     <h1>{{ institution.name }}</h1>
 
-    <p><strong>Region:</strong> {{ institution.region.name }}</p>
-    <p><strong>Category:</strong> {{ institution.category }}</p>
-    {% if institution.city %}
-        <p><strong>City:</strong> {{ institution.city }}</p>
-    {% endif %}
+    <!-- Institution details -->
+    <section>
+        <p><strong>Region:</strong> {{ institution.region.name }}</p>
+        <p><strong>Category:</strong> {{ institution.category }}</p>
 
-    {% if institution.postcode %}
-        <p><strong>Postcode:</strong> {{ institution.postcode }}</p>
-    {% endif %}
-
-    {% if institution.founded_year %}
-        <p><strong>Founded:</strong> {{ institution.founded_year }}</p>
-    {% endif %}
-
-    {% if institution.website %}
-        <p>
-            <strong>Website:</strong>
-            <a href="{{ institution.website }}" target="_blank">
-                Visit Website
-            </a>
-        </p>
-    {% endif %}
-
-    {% if user.is_authenticated %}
-        {% if is_favourite %}
-            <a href="{% url 'remove_favourite' institution.id %}">
-                <button>Remove from Favourites</button>
-            </a>
-        {% else %}
-            <a href="{% url 'add_favourite' institution.id %}">
-                <button>Add to Favourites</button>
-            </a>
+        {% if institution.city %}
+            <p><strong>City:</strong> {{ institution.city }}</p>
         {% endif %}
-    {% endif %}
 
-    {% if not user.is_authenticated %}
-        <p class="login-favourite-notice">
-            <a href="{% url 'login' %}">Login</a> to save this institution as a favourite.
+        {% if institution.postcode %}
+            <p><strong>Postcode:</strong> {{ institution.postcode }}</p>
+        {% endif %}
+
+        {% if institution.founded_year %}
+            <p><strong>Founded:</strong> {{ institution.founded_year }}</p>
+        {% endif %}
+    </section>
+
+    <!-- Favourite action for logged-in users -->
+    {% if user.is_authenticated %}
+        <form
+            action="{% if is_favourite %}{% url 'remove_favourite' institution.id %}{% else %}{% url 'add_favourite' institution.id %}{% endif %}"
+            method="POST"
+        >
+            {% csrf_token %}
+
+            <button type="submit" class="default-btn">
+                {% if is_favourite %}
+                    Remove from Favourites
+                {% else %}
+                    Add to Favourites
+                {% endif %}
+            </button>
+        </form>
+
+    <!-- Login prompt for guest users -->
+    {% else %}
+        <p class="notice-box">
+            <a href="{% url 'login' %}" class="default-btn">
+                Login
+            </a>
+            to save this institution as a favourite.
         </p>
     {% endif %}
 
     <hr>
 
-    <h2>Key Metrics</h2>
-    <ul>
-        {% if latest_record %}
-            <li><strong>Score:</strong> {{ latest_record.overall_score }}</li>
-            <li><strong>Attendance:</strong> {{ latest_record.attendance_rate_pct|default:"N/A" }}%</li>
-            <li><strong>Rating:</strong> {{ latest_record.rating }}</li>
-            <li><strong>Student Satisfaction:</strong> {{ latest_record.student_satisfaction_pct|default:"N/A" }}%</li>
-            <li><strong>Graduate Outcome:</strong> {{ latest_record.graduate_outcome_pct|default:"N/A" }}%</li>
-        {% else %}
-            <li>No performance data available.</li>
-        {% endif %}
-    </ul>
+    <!-- Latest performance metrics -->
+    <section>
+        <h2>Key Metrics</h2>
 
-    <h2>Performance Trend</h2>
+        <ul>
+            {% if latest_record %}
+                <li>
+                    <strong>Score:</strong>
+                    {{ latest_record.overall_score }}
+                </li>
 
-    <div class="chart-container">
-        <canvas id="performanceChart"></canvas>
-    </div>
+                <li>
+                    <strong>Attendance:</strong>
+                    {{ latest_record.attendance_rate_pct|default:"N/A" }}%
+                </li>
 
-    {{ chart_years|json_script:"years-data" }}
-    {{ chart_scores|json_script:"scores-data" }}
-    {{ chart_attendance|json_script:"attendance-data" }}
+                <li>
+                    <strong>Rating:</strong>
+                    {{ latest_record.rating }}
+                </li>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <li>
+                    <strong>Student Satisfaction:</strong>
+                    {{ latest_record.student_satisfaction_pct|default:"N/A" }}%
+                </li>
 
-    <script>
-        const years = JSON.parse(document.getElementById('years-data').textContent);
-        const scores = JSON.parse(document.getElementById('scores-data').textContent);
-        const attendance = JSON.parse(document.getElementById('attendance-data').textContent);
+                <li>
+                    <strong>Graduate Outcome:</strong>
+                    {{ latest_record.graduate_outcome_pct|default:"N/A" }}%
+                </li>
+            {% else %}
+                <li>No performance data available.</li>
+            {% endif %}
+        </ul>
+    </section>
 
-        const ctx = document.getElementById('performanceChart');
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: years,
-                datasets: [
-                    {
-                        label: 'Score',
-                        data: scores,
-                        borderWidth: 2,
-                        tension: 0.3
-                    },
-                    {
-                        label: 'Attendance',
-                        data: attendance,
-                        borderWidth: 2,
-                        tension: 0.3
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Performance Over Time'
-                    }
+    <!-- Performance analysis summary -->
+    {% if latest_record %}
+        <section class="summary-box">
+            <h2>Performance Summary</h2>
+
+            <p>
+                Performance level:
+                <strong>{{ performance_label }}</strong>
+            </p>
+
+            {% if regional_average %}
+                <p>
+                    Regional average score:
+                    {{ regional_average|floatformat:1 }}
+                </p>
+
+                {% if score_difference > 0 %}
+                    <p>
+                        This institution performs
+                        <strong>{{ score_difference|floatformat:1 }}</strong>
+                        points above the regional average.
+                    </p>
+                {% elif score_difference < 0 %}
+                    <p>
+                        This institution performs
+                        <strong>{{ score_difference|floatformat:1|cut:"-" }}</strong>
+                        points below the regional average.
+                    </p>
+                {% else %}
+                    <p>This institution matches the regional average.</p>
+                {% endif %}
+            {% endif %}
+        </section>
+    {% endif %}
+
+    
+    <!-- Performance chart area -->
+    {% if chart_years and chart_scores %}
+        <section>
+            <h2>Performance Trend</h2>
+
+            <div class="chart-container">
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Chart values passed safely from Django to JavaScript -->
+        {{ chart_years|json_script:"years-data" }}
+        {{ chart_scores|json_script:"scores-data" }}
+        {{ chart_attendance|json_script:"attendance-data" }}
+
+        <!-- Chart.js library -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <!-- Line chart setup for score and attendance trends -->
+        <script>
+            const years = JSON.parse(
+                document.getElementById('years-data').textContent
+            );
+
+            const scores = JSON.parse(
+                document.getElementById('scores-data').textContent
+            );
+
+            const attendance = JSON.parse(
+                document.getElementById('attendance-data').textContent
+            );
+
+            const chartContext = document.getElementById('performanceChart');
+
+            const chartDatasets = [
+                {
+                    label: 'Score',
+                    data: scores,
+                    borderWidth: 2,
+                    tension: 0.3
                 },
-                scales: {
-                    y: {
-                        suggestedMin: 0,
-                        suggestedMax: 100
+                {
+                    label: 'Attendance',
+                    data: attendance,
+                    borderWidth: 2,
+                    tension: 0.3
+                }
+            ];
+
+            new Chart(chartContext, {
+                type: 'line',
+
+                data: {
+                    labels: years,
+                    datasets: chartDatasets
+                },
+
+                options: {
+                    responsive: true,
+
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Performance Over Time'
+                        }
+                    },
+
+                    scales: {
+                        y: {
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
                     }
                 }
-            }
-        });
-    </script>
+            });
+        </script>
+    {% else %}
+        <p class="notice-box">No chart data available for this institution.</p>
+    {% endif %}
 
-    <br>
-    <a href="{% url 'institution_list' %}" class="back-link">&larr; Back to list</a>
+
+    <!-- Link back to institution list -->
+    <a href="{% url 'institution_list' %}" class="back-link">
+        &larr; Back to list
+    </a>
+
 {% endblock %}

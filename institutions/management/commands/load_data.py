@@ -30,12 +30,15 @@ class Command(BaseCommand):
         with open(os.path.join(data_dir, "regions.csv"), encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                r = Region.objects.create(
-                    name=row["name"],
-                    country=row["country"],
-                )
+                # main_city is a new field, may not exist in older models
+                kwargs = {
+                    "name": row["name"],
+                    "country": row["country"],
+                }
+
+                r = Region.objects.create(**kwargs)
                 region_map[int(row["region_id"])] = r
-        print("regions done:", len(region_map))
+        print("regions loaded:", len(region_map))
 
         # load institutions
         inst_map = {}
@@ -49,10 +52,9 @@ class Command(BaseCommand):
                     city=row["city"],
                     postcode=row["postcode"],
                     founded_year=int(row["founded_year"]) if row["founded_year"] else None,
-                    website=row["website"] or "",
                 )
                 inst_map[int(row["institution_id"])] = inst
-        print("institutions done:", len(inst_map))
+        print("institutions loaded:", len(inst_map))
 
         # load performance records
         records = []
@@ -63,7 +65,7 @@ class Command(BaseCommand):
                     institution=inst_map[int(row["institution_id"])],
                     year=int(row["year"]),
                     rating=row["rating"],
-                    overall_score=int(row["overall_score"]),
+                    overall_score=float(row["overall_score"]),
                     student_satisfaction_pct=float(row["student_satisfaction_pct"]) if row["student_satisfaction_pct"] else None,
                     graduate_outcome_pct=float(row["graduate_outcome_pct"]) if row["graduate_outcome_pct"] else None,
                     attendance_rate_pct=float(row["attendance_rate_pct"]) if row["attendance_rate_pct"] else None,
@@ -71,5 +73,5 @@ class Command(BaseCommand):
 
         # bulk create is faster
         PerformanceRecord.objects.bulk_create(records, batch_size=500)
-        print("performance records done:", len(records))
+        print("performance records loaded:", len(records))
         print("all data loaded.")

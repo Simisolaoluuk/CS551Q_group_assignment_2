@@ -1,23 +1,79 @@
 {% extends 'institutions/base.html' %}
 
 {% block content %}
-    <h1>Welcome to the Institution Dashboard</h1>
 
-    <form action="{% url 'institution_list' %}" method="GET" style="margin-bottom: 20px;">
-        <input type="text" name="q" placeholder="Search institutions..." required>
-        <button type="submit">Search</button>
+    <!-- Homepage hero section -->
+    <section class="dashboard-hero">
+        <h1>Welcome to the Institution Dashboard</h1>
+
+        <p class="intro-text">
+            Explore educational institutions, compare performance metrics,
+            and analyse trends across different regions and categories.
+        </p>
+    </section>
+
+    <!-- Dashboard statistic cards -->
+    <section class="dashboard-stats">
+
+        <!-- Total institutions -->
+        <div class="stat-card">
+            <h3>Total Institutions</h3>
+            <p>{{ total_institutions }}</p>
+        </div>
+
+        <!-- Total regions -->
+        <div class="stat-card">
+            <h3>Total Regions</h3>
+            <p>{{ total_regions }}</p>
+        </div>
+
+        <!-- Highest score -->
+        <div class="stat-card">
+            <h3>Highest Score</h3>
+
+            <p>
+                {% if top_score %}
+                    {{ top_score.overall_score }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </p>
+        </div>
+
+    </section>
+
+    <!-- Institution search form -->
+    <form
+        action="{% url 'institution_list' %}"
+        method="GET"
+        class="search-form"
+    >
+        <!-- Search input -->
+        <input
+            type="text"
+            name="q"
+            placeholder="Search institutions..."
+            required
+        >
+
+        <!-- Submit search -->
+        <button type="submit" class="default-btn">
+            Search
+        </button>
     </form>
 
-    <div class="quick-actions" style="margin-bottom: 20px;">
-        <a href="{% url 'institution_list' %}"><button>Browse Institutions</button></a>
-        <a href="{% url 'compare_institutions' %}"><button>Compare Institutions</button></a>
-        <a href="{% url 'top_institutions' %}"><button>Top Institutions</button></a>
-    </div>
-
+    <!-- Top institutions grouped by category -->
     {% for group in top_institutions_by_category %}
-        <h2>Top 3 {{ group.category_label }} Institutions</h2>
 
+        <!-- Category heading -->
+        <h2>
+            Top 3 {{ group.category_label }}
+        </h2>
+
+        <!-- Institution table -->
         <table>
+
+            <!-- Table headings -->
             <thead>
                 <tr>
                     <th>Rank</th>
@@ -25,25 +81,58 @@
                     <th>Region</th>
                     <th>Score</th>
                     <th>Attendance</th>
-                    <th>Trend</th>
+                    <th>Details</th>
                 </tr>
             </thead>
+
+            <!-- Institution rows -->
             <tbody>
+
                 {% for institution in group.institutions %}
                     <tr>
+
+                        <!-- Institution ranking -->
                         <td>{{ forloop.counter }}</td>
+
+                        <!-- Institution name -->
                         <td>{{ institution.name }}</td>
+
+                        <!-- Institution region -->
                         <td>{{ institution.region.name }}</td>
-                        <td>{{ institution.latest_score|default:"N/A" }}</td>
-                        <td>{{ institution.latest_attendance|default:"N/A" }}%</td>
-                        <td><a href="{% url 'institution_detail' institution.id %}" class="table-link">View</a></td>
+
+                        <!-- Institution score -->
+                        <td>
+                            {{ institution.latest_score|default:"N/A" }}
+                        </td>
+
+                        <!-- Institution attendance -->
+                        <td>
+                            {{ institution.latest_attendance|default:"N/A" }}%
+                        </td>
+
+                        <!-- Institution details link -->
+                        <td>
+                            <a
+                                href="{% url 'institution_detail' institution.id %}"
+                                class="table-link"
+                            >
+                                View
+                            </a>
+                        </td>
                     </tr>
+
+                <!-- Empty state -->
                 {% empty %}
                     <tr>
-                        <td colspan="6">No institutions available.</td>
+                        <td colspan="6">
+                            No institutions available.
+                        </td>
                     </tr>
                 {% endfor %}
+
             </tbody>
         </table>
+
     {% endfor %}
+
 {% endblock %}
