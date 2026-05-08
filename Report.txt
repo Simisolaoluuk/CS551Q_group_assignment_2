@@ -4,7 +4,7 @@
 This report summarizes the development of the Educational Dashboard, a Django-based web application for exploring UK educational institutions. The project involved creating a comprehensive platform with features for institution listings, comparisons, favorites, and performance analytics. The team consisted of four members: Umama (Backend), Ruichi (Frontend), Jia (Dataset), and Simisola (Project Management).
 
 ## Team Contributions
--**Umama** implemented the backend architecture, including Django models, views, and database logic to support efficient data retrieval and application functionality.
+-**Umama** implemented the backend architecture, including Django models, views, and database logic to support efficient data retrieval, application functionality, testing and deployment.
 -**Ruichi** developed the frontend interface, creating responsive templates and user‑friendly layouts to ensure smooth navigation.
 -**Jia** managed dataset creation and integration, generating realistic sample data and writing scripts to clean, structure, and import thousands of records.
 -**Simisola** coordinated project management activities, maintained GitHub issue tracking, assigned tasks, and produced documentation including the README and final report.
@@ -22,7 +22,7 @@ Initial implementations caused performance issues due to repeated database queri
 Implementing comparison and favorites features introduced edge cases such as category validation, duplicate prevention, and error handling. Additional logic was added for performance summaries, regional averages, and score analysis.
 
 ### Collaboration and Version Control
-Ruichi and Jia initially struggled with understanding GitHub workflows but quickly adapted through practice and team support. Merge conflicts arose frequently, especially with configuration files, requiring careful resolution to maintain application stability.
+Ruichi and Jia initially struggled with understanding GitHub workflows but quickly adapted through practice and team support. Merge constructive conflicts arose frequently, especially with configuration files, requiring careful resolution to maintain application stability.
 
 ### Testing and Quality Assurance
 A comprehensive test suite was developed to cover views, authentication, and data loading. Initial test failures due to redirects and validation logic necessitated iterative refinement of both code and tests.
