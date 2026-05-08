@@ -297,6 +297,20 @@ tr:hover {
     background-color: #f1f5f9;
 }
 
+/* Action buttons inside table cells */
+td .table-link,
+td .table-button {
+    margin: 4px;
+}
+
+/* Favourite action buttons */
+.favourite-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
 /* Highlighted winner cells */
 .winner {
     background-color: #d4edda !important;
