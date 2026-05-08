@@ -33,7 +33,7 @@ Before setting up the project, ensure you have the following installed:
 
 1. **Clone the Repository**:
    ```bash
-   git clone <gh repo clone Simisolaoluuk/CS551Q_group_assignment_2>
+   git clone < gh repo clone Simisolaoluuk/CS551Q_group_assignment_2 >
    cd CS551Q_group_assignment_2
    ```
 
