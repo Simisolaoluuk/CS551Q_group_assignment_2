@@ -10,6 +10,7 @@ This Django-based web application provides an interactive dashboard for explorin
 - Favorites System: Save and manage a list of favorite institutions.
 - User Authentication: Secure login and registration system for personalized experiences.
 - Filtering and Search: Advanced filtering options by region, category, and other attributes.
+- Responsive Design: Mobile-friendly layouts for desktop, tablet, and mobile devices.
 
 ## Project Structure
 
@@ -32,7 +33,7 @@ Before setting up the project, ensure you have the following installed:
 
 1. **Clone the Repository**:
    ```bash
-   git clone <repository-url>
+   git clone <gh repo clone Simisolaoluuk/CS551Q_group_assignment_2>
    cd CS551Q_group_assignment_2
    ```
 
@@ -85,6 +86,17 @@ python manage.py test
 
 The tests cover model functionality, views, authentication, and other core features. Ensure all tests pass before deploying or making significant changes.
 
+## Testing coverage:
+The project includes 41 automated Django test cases covering:
+- ⁠models
+- ⁠views
+- ⁠authentication
+- ⁠favourites
+- ⁠institution comparison
+- ⁠filtering and search
+- ⁠invalid inputs
+- ⁠data loading functionality
+
 ## Run Instructions
 
 1. **Start the Development Server**:
@@ -116,7 +128,17 @@ export ALLOWED_HOSTS='yourdomain.com'
 ## Deployment
 `https://umama2026.pythonanywhere.com/`
 
+## Technologies Used
+- Python
+- Django
+- SQLite
+- ⁠HTML5
+- ⁠CSS3
+- ⁠JavaScript
+- ⁠Chart.js
+- ⁠Git and GitHub
+
 ## Acknowledgments
 
-- Dataset generation inspired by real UK educational data.
+- Dataset generation inspired by real UK educational institution data.
 - Built with Django framework for robust web development.
