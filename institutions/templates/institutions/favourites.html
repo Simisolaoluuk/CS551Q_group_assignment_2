@@ -45,28 +45,23 @@
                         <td>
 
                             <!-- Institution details link -->
-                            <a
-                                href="{% url 'institution_detail' favourite.institution.id %}"
-                                class="table-link"
-                            >
-                                View
-                            </a>
+                            <div class="favourite-actions">
+                                <a href="{% url 'institution_detail' favourite.institution.id %}"
+                                class="table-link">
+                                    View
+                                </a>
 
-                            <!-- Remove favourite form -->
-                            <form
-                                action="{% url 'remove_favourite' favourite.institution.id %}"
-                                method="POST"
-                                class="inline-form"
-                            >
-                                {% csrf_token %}
-
-                                <button
-                                    type="submit"
-                                    class="table-button"
+                                <form
+                                    action="{% url 'remove_favourite' favourite.institution.id %}"
+                                    method="POST"
                                 >
-                                    Remove
-                                </button>
-                            </form>
+                                    {% csrf_token %}
+
+                                    <button type="submit" class="table-button">
+                                        Remove
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}
