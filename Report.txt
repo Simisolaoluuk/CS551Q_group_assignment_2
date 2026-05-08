@@ -1,0 +1,39 @@
+# Final Project Report: Educational Dashboard
+
+## Project Overview
+This report summarizes the development of the Educational Dashboard, a Django-based web application for exploring UK educational institutions. The project involved creating a comprehensive platform with features for institution listings, comparisons, favorites, and performance analytics. The team consisted of four members: Umama (Backend), Ruichi (Frontend), Jia (Dataset), and Simisola (Project Management).
+
+## Team Contributions
+-**Umama** implemented the backend architecture, including Django models, views, and database logic to support efficient data retrieval and application functionality.
+-**Ruichi** developed the frontend interface, creating responsive templates and user‑friendly layouts to ensure smooth navigation.
+-**Jia** managed dataset creation and integration, generating realistic sample data and writing scripts to clean, structure, and import thousands of records.
+-**Simisola** coordinated project management activities, maintained GitHub issue tracking, assigned tasks, and produced documentation including the README and final report.
+
+## Challenges Faced
+The development process presented several universal challenges that the group addressed collaboratively:
+
+### Data Management and Integration
+Managing a large educational dataset with thousands of records across multiple categories required significant effort. The team worked on data cleaning, establishing proper database relationships, and developing a custom Django management command for reliable data import.
+
+### Performance Optimization
+Initial implementations caused performance issues due to repeated database queries. The team utilized Django ORM features like annotations, subqueries, and aggregations to optimize data retrieval, particularly for performance metrics and institution details.
+
+### Feature Development
+Implementing comparison and favorites features introduced edge cases such as category validation, duplicate prevention, and error handling. Additional logic was added for performance summaries, regional averages, and score analysis.
+
+### Collaboration and Version Control
+Ruichi and Jia initially struggled with understanding GitHub workflows but quickly adapted through practice and team support. Merge conflicts arose frequently, especially with configuration files, requiring careful resolution to maintain application stability.
+
+### Testing and Quality Assurance
+A comprehensive test suite was developed to cover views, authentication, and data loading. Initial test failures due to redirects and validation logic necessitated iterative refinement of both code and tests.
+
+### Deployment Preparation
+Preparing the application for deployment involved configuring environment variables, static files, allowed hosts, and security settings suitable for platforms such as PythonAnywhere. The final deployment is available at:
+https://umama2026.pythonanywhere.com/
+
+## Solutions and Learnings
+Through these challenges, the team learned the importance of early planning, regular communication, and iterative testing. The team's structured approach to issue tracking ensured efficient task management, while the division of responsibilities allowed each member to develop specialized skills. The group's adaptability, particularly with version control, strengthened overall collaboration.
+
+## Conclusion
+The Educational Dashboard project successfully demonstrated the team's ability to overcome technical and collaborative challenges in developing a full-stack web application. The experience enhanced skills in Django development, data management, and team coordination, preparing us for future software engineering endeavors.</content>
+<parameter name="filePath">/Users/user/Documents/GitHub/CS551Q_group_assignment_2/Report.txt
