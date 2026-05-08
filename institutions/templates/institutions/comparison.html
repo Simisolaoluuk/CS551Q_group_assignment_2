@@ -45,13 +45,26 @@
         </tbody>
     </table>
 
-    <!-- Best overall institution summary -->
-    <h2 class="comparison-summary">
-        Best Overall:
-        <span class="best-overall-name">
-            {{ best_overall.name }}
-        </span>
-    </h2>
+    <!-- Institution comparison summary -->
+    <section class="summary-box">
+        <h2>Comparison Summary</h2>
+
+        <p>
+            Highest performing:
+            <strong>{{ best_overall.name }}</strong>
+        </p>
+
+        <p>
+            Lowest performing:
+            <strong>{{ lowest_overall.name }}</strong>
+        </p>
+
+        <p>
+            Score gap:
+            <strong>{{ score_gap|floatformat:1 }}</strong>
+            points.
+        </p>
+    </section>
 
     <!-- Link back to the institution list -->
     <a href="{% url 'institution_list' %}" class="back-link">
